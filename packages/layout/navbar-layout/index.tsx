@@ -1,38 +1,71 @@
 'use client'
 
-import { Search, Bell } from 'lucide-react'
-import { useAuthStore } from '@/packages/hook/use-auth'
-import { Input } from '@/core/ui/components/input'
+import { Button } from '@/core/ui/components/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/core/ui/components/avatar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/core/ui/components/dropdown-menu'
+import { useAuthStore } from '@/packages/hook/use-auth'
+import { ChevronDown, Notification, Search } from '@/packages/assets/icons'
 
-export const NavbarLayout = () => {
+interface NavbarLayoutProps {
+  title: string
+}
+
+export default function NavbarLayout({ title }: NavbarLayoutProps) {
   const { user } = useAuthStore()
 
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+  }
+
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-white px-6">
-      <div className="flex flex-1 items-center gap-4">
-        <div className="relative w-96">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-          <Input type="search" placeholder="Search..." className="pl-9 bg-gray-50 border-none" />
-        </div>
-      </div>
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between bg-background px-6">
+      <h1 className="text-[25px] font-semibold text-[#1B212D]">{title}</h1>
 
-      <div className="flex items-center gap-4">
-        <button className="relative rounded-full p-2 hover:bg-gray-100">
-          <Bell className="h-5 w-5 text-gray-600" />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
-        </button>
+      <div className="flex items-center">
+        <Button variant="ghost" size="icon" className="h-10 w-10">
+          <Search className="h-6 w-6 text-[#929EAE]" strokeWidth={2} />
+        </Button>
 
-        <div className="flex items-center gap-3">
-          <Avatar>
-            <AvatarImage src="/avatar-placeholder.png" alt={user?.fullName} />
-            <AvatarFallback>{user?.fullName?.charAt(0) || 'U'}</AvatarFallback>
-          </Avatar>
-          <div className="text-sm">
-            <div className="font-medium">{user?.fullName || 'User'}</div>
-            <div className="text-gray-500">{user?.email || 'user@example.com'}</div>
-          </div>
-        </div>
+        <div className="w-[45px]" />
+
+        <Button variant="ghost" size="icon" className="relative h-10 w-10">
+          <Notification className="h-6 w-6 text-[#929EAE]" strokeWidth={2} />
+          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive" />
+        </Button>
+
+        <div className="w-[45px]" />
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-3 rounded-full bg-[#FAFAFA] px-4 py-2 transition-colors hover:bg-[#F0F0F0]">
+              <Avatar className="h-9 w-9">
+                <AvatarImage src={undefined} className="object-cover" />
+                <AvatarFallback className="bg-[#C8EE44] text-xs font-semibold text-[#1B212D]">
+                  {user?.fullName ? getInitials(user.fullName) : 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-sm font-semibold text-[#1B212D]">
+                {user?.fullName || 'User'}
+              </span>
+              <div className="w-7" />
+              <ChevronDown className="h-2.5 w-2.5 text-[#1B212D]" strokeWidth={2} />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem>Settings</DropdownMenuItem>
+            <DropdownMenuItem>Logout</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   )

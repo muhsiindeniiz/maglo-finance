@@ -1,0 +1,31 @@
+import { forwardRef, SVGProps } from 'react';
+
+interface ChevronDownProps extends SVGProps<SVGSVGElement> {
+    width?: number | string;
+    height?: number | string;
+}
+
+const ChevronDown = forwardRef<SVGSVGElement, ChevronDownProps>(
+    ({ width = 10, height = 6, ...props }, ref) => {
+        return (
+            <svg
+                width={width}
+                height={height}
+                viewBox="0 0 10 6"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                ref={ref}
+                {...props}
+            >
+                <path
+                    d="M9.15082 0H4.7379H0.76413C0.0841302 0 -0.25587 0.821666 0.225797 1.30334L3.89499 4.97251C4.4829 5.56042 5.43915 5.56042 6.02707 4.97251L7.42248 3.57709L9.69624 1.30334C10.1708 0.821666 9.83082 0 9.15082 0Z"
+                    fill="currentColor"
+                />
+            </svg>
+        );
+    }
+);
+
+ChevronDown.displayName = 'ChevronDown';
+
+export default ChevronDown;

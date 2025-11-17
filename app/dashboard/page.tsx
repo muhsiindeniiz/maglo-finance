@@ -1,5 +1,5 @@
-const DashboardPage = () => {
-  return <div>DashboardPage</div>
-}
+import DashboardPage from '@/modules/dashboard/view/dashboard-page'
 
-export default DashboardPage
+export default function Page() {
+  return <DashboardPage />
+}

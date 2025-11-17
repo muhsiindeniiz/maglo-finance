@@ -1,1 +1,13 @@
-export { default as Trash } from './google-logo'
+export { default as GoogleLogo } from './google-logo'
+export { default as Search } from './search';
+export { default as Notification } from './notification';
+export { default as Home } from './home';
+export { default as Transaction } from './transaction';
+export { default as Invoices } from './invoices';
+export { default as WalletsOpen } from './wallets-open';
+export { default as Settings } from './settings';
+export { default as Help } from './help';
+export { default as Logout } from './logout';
+export { default as WalletClose } from './wallet-close';
+export { default as Ellipses } from './ellipses';
+export { default as ChevronDown } from './chevron-down';

@@ -11,19 +11,11 @@ export interface ApiErrorResponse {
   code?: string
 }
 
-export interface PaginatedResponse<T> {
-  data: T[]
-  total: number
-  page: number
-  limit: number
-}
-
 export interface FinancialAmount {
   amount: number
   currency: string
   change?: {
     percentage: number
-    amount: number
     trend: 'up' | 'down'
   }
 }
@@ -36,9 +28,10 @@ export interface FinancialSummary {
 }
 
 export interface WorkingCapitalDataPoint {
-  date: string
+  month: string
   income: number
-  expenses: number
+  expense: number
+  net: number
 }
 
 export interface WorkingCapital {
@@ -47,21 +40,24 @@ export interface WorkingCapital {
   data: WorkingCapitalDataPoint[]
   summary: {
     totalIncome: number
-    totalExpenses: number
-    netChange: number
+    totalExpense: number
+    netBalance: number
   }
 }
 
 export interface Card {
   id: string
+  name: string
   type: 'debit' | 'credit'
-  bankName: string
   cardNumber: string
-  expiryDate: string
-  cardHolder: string
-  balance?: number
-  currency: string
-  brand: 'visa' | 'mastercard'
+  bank: string
+  network: string
+  brand?: 'visa' | 'mastercard' | 'amex'
+  expiryMonth: number
+  expiryYear: number
+  expiryDate?: string
+  color: string
+  isDefault: boolean
 }
 
 export interface Wallet {
@@ -72,34 +68,41 @@ export interface Transaction {
   id: string
   name: string
   business: string
+  image: string
+  icon?: string
   type: string
   amount: number
   currency: string
   date: string
-  icon?: string
+  status: string
 }
 
 export interface RecentTransactions {
   transactions: Transaction[]
   summary: {
-    totalAmount: number
+    totalIncome: number
+    totalExpense: number
     count: number
   }
 }
 
 export interface ScheduledTransfer {
   id: string
-  recipientName: string
+  name: string
+  recipientName?: string
+  image: string
   recipientAvatar?: string
+  date: string
+  scheduledDate?: string
   amount: number
   currency: string
-  scheduledDate: string
+  status: string
 }
 
 export interface ScheduledTransfers {
   transfers: ScheduledTransfer[]
   summary: {
-    totalAmount: number
+    totalScheduledAmount: number
     count: number
   }
 }

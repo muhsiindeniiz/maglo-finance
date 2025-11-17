@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/core/ui/components/button'
-import GoogleLogo from '@/packages/assets/icons/google-logo'
+import { GoogleLogo } from '@/packages/assets/icons'
 import { cn } from '@/packages/util/cn'
 
 interface GoogleButtonProps {
