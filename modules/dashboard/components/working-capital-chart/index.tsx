@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/core/ui/components/card'
 import { Skeleton } from '@/core/ui/components/skeleton'
 import {
@@ -52,6 +52,7 @@ export default function WorkingCapitalChart({
 }: WorkingCapitalChartProps) {
     const [selectedPeriod, setSelectedPeriod] = useState('last7Days')
     const [hiddenDatasets, setHiddenDatasets] = useState<{ [key: string]: boolean }>({})
+    const lastActiveDatasetRef = useRef<number | null>(null)
 
     useEffect(() => {
         if (onPeriodChange) {
@@ -98,7 +99,6 @@ export default function WorkingCapitalChart({
         )
     }
 
-    // Calculate the max value for Y-axis
     const visibleValues: number[] = []
     if (!hiddenDatasets['Income']) {
         visibleValues.push(...data.data.map((item) => item.income))
@@ -121,10 +121,10 @@ export default function WorkingCapitalChart({
                 tension: 0.4,
                 fill: false,
                 pointRadius: 0,
-                pointHoverRadius: 6,
+                pointHoverRadius: 8,
                 pointHoverBackgroundColor: '#5243AA',
                 pointHoverBorderColor: '#FFFFFF',
-                pointHoverBorderWidth: 6,
+                pointHoverBorderWidth: 4,
                 borderWidth: 3,
                 hidden: hiddenDatasets['Income'],
             },
@@ -136,35 +136,65 @@ export default function WorkingCapitalChart({
                 tension: 0.4,
                 fill: false,
                 pointRadius: 0,
-                pointHoverRadius: 6,
+                pointHoverRadius: 8,
                 pointHoverBackgroundColor: '#5243AA',
                 pointHoverBorderColor: '#FFFFFF',
-                pointHoverBorderWidth: 6,
+                pointHoverBorderWidth: 4,
                 borderWidth: 3,
                 hidden: hiddenDatasets['Expenses'],
             },
         ],
     }
 
-    // Custom plugin for vertical hover line with gradient background
     const hoverLinePlugin: Plugin<'line'> = {
         id: 'hoverLine',
         afterDatasetsDraw(chart) {
             const { ctx, tooltip, chartArea } = chart
 
-            if (tooltip?.getActiveElements().length) {
+            if (tooltip && tooltip.getActiveElements && tooltip.getActiveElements().length > 0) {
                 const activePoint = tooltip.getActiveElements()[0]
-                const x = activePoint.element.x
 
-                // Draw gradient background
-                const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom)
-                gradient.addColorStop(0, 'rgba(250, 251, 254, 0)')
-                gradient.addColorStop(0.6656, '#F2F6FC')
+                if (activePoint && activePoint.element) {
+                    const x = activePoint.element.x
 
-                ctx.save()
-                ctx.fillStyle = gradient
-                ctx.fillRect(x - 25, chartArea.top, 50, chartArea.bottom - chartArea.top)
-                ctx.restore()
+                    const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom)
+                    gradient.addColorStop(0, 'rgba(250, 251, 254, 0)')
+                    gradient.addColorStop(0.6656, '#F2F6FC')
+
+                    ctx.save()
+
+                    const rectX = x - 25
+                    const rectY = chartArea.top
+                    const rectWidth = 50
+                    const rectHeight = chartArea.bottom - chartArea.top
+                    const borderRadius = 12
+
+                    ctx.fillStyle = gradient
+                    ctx.beginPath()
+                    ctx.moveTo(rectX, rectY)
+                    ctx.lineTo(rectX + rectWidth, rectY)
+                    ctx.lineTo(rectX + rectWidth, rectY + rectHeight - borderRadius)
+                    ctx.arcTo(
+                        rectX + rectWidth,
+                        rectY + rectHeight,
+                        rectX + rectWidth - borderRadius,
+                        rectY + rectHeight,
+                        borderRadius
+                    )
+                    ctx.lineTo(rectX + borderRadius, rectY + rectHeight)
+                    ctx.arcTo(
+                        rectX,
+                        rectY + rectHeight,
+                        rectX,
+                        rectY + rectHeight - borderRadius,
+                        borderRadius
+                    )
+                    ctx.lineTo(rectX, rectY)
+                    ctx.closePath()
+                    ctx.fill()
+
+                    ctx.restore()
+                }
             }
         },
     }
@@ -185,7 +215,7 @@ export default function WorkingCapitalChart({
                 enabled: true,
                 mode: 'nearest',
                 intersect: false,
-                axis: 'x',
+                axis: 'xy',
                 backgroundColor: '#F3F6F8',
                 titleColor: '#1B212D',
                 bodyColor: '#1B212D',
@@ -193,11 +223,11 @@ export default function WorkingCapitalChart({
                 borderWidth: 0,
                 titleFont: {
                     size: 12,
-                    weight: 'normal',
+                    weight: 500,
                 },
                 bodyFont: {
                     size: 12,
-                    weight: 'normal',
+                    weight: 500,
                 },
                 padding: {
                     top: 6,
@@ -238,7 +268,7 @@ export default function WorkingCapitalChart({
                     },
                     font: {
                         size: 12,
-                        weight: '400',
+                        weight: 400,
                     },
                     color: '#929EAE',
                     padding: 10,
@@ -259,7 +289,7 @@ export default function WorkingCapitalChart({
                 ticks: {
                     font: {
                         size: 12,
-                        weight: '400',
+                        weight: 400,
                     },
                     color: '#929EAE',
                     padding: 10,
@@ -274,8 +304,14 @@ export default function WorkingCapitalChart({
         },
         interaction: {
             mode: 'nearest',
-            axis: 'x',
+            axis: 'xy',
             intersect: false,
+        },
+        onHover: (event, activeElements) => {
+            const canvasElement = event.native?.target as HTMLCanvasElement
+            if (canvasElement) {
+                canvasElement.style.cursor = activeElements.length > 0 ? 'pointer' : 'default'
+            }
         },
     }
 

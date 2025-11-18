@@ -7,7 +7,7 @@ import { WalletCloseIconProps } from '@/packages/assets/icons/wallet-close'
 
 interface SummaryCardProps {
     title: string
-    data?: FinancialAmount | undefined  // Explicitly allow undefined
+    data?: FinancialAmount | undefined
     icon: ForwardRefExoticComponent<Omit<WalletCloseIconProps, "ref"> & RefAttributes<SVGSVGElement>>
     variant: 'balance' | 'default'
     isLoading?: boolean

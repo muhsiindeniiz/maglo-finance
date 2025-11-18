@@ -1,4 +1,3 @@
-// core/api/endpoints/financial.ts
 import { apiClient } from '../client'
 import {
     ApiResponse,

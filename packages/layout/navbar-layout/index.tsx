@@ -54,10 +54,10 @@ export default function NavbarLayout({ title }: NavbarLayoutProps) {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-3 rounded-full bg-[#FAFAFA] px-4 py-2 transition-colors hover:bg-[#F0F0F0]">
+            <button className="flex items-center gap-3 rounded-full bg-[#FAFAFA] pl-[7px] py-[6px] pr-[15px] transition-colors hover:bg-[#F0F0F0]">
               <Avatar className="h-9 w-9">
                 <AvatarImage src={undefined} className="object-cover" />
-                <AvatarFallback className="bg-[#C8EE44] text-xs font-semibold text-[#1B212D]">
+                <AvatarFallback className="bg-[#C8EE44] text-[14px] font-semibold text-[#1B212D]">
                   {user?.fullName ? getInitials(user.fullName) : 'U'}
                 </AvatarFallback>
               </Avatar>
