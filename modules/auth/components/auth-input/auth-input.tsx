@@ -1,35 +1,53 @@
 'use client'
 
 import { forwardRef } from 'react'
-import { Input } from '@/core/ui/components/input'
 import { Label } from '@/core/ui/components/label'
 import { cn } from '@/packages/util/cn'
-import { authInputVariants, type AuthInputVariants } from './auth-input.cva'
+import { useClassnames } from '@/packages/hook/use-classnames'
+import * as cva from './auth-input.cva'
 import { type AuthInputProps } from './auth-input.type'
 
-export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps & AuthInputVariants>(
-  ({ id, label, type = 'text', placeholder, error, disabled, className, size, ...props }, ref) => {
+export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
+  (
+    {
+      id,
+      label,
+      type = 'text',
+      placeholder,
+      error,
+      disabled,
+      className,
+      size = 'default',
+      ...props
+    },
+    ref
+  ) => {
+    const cx = useClassnames({
+      root: cva.rootCva({ size }),
+      label: cva.labelCva(),
+      input: cva.inputCva({ error: !!error }),
+      errorContainer: cva.errorContainerCva(),
+      errorIcon: cva.errorIconCva(),
+    })
+
     return (
-      <div className={cn(authInputVariants({ size }), className)}>
-        <Label htmlFor={id} className="text-[14px] font-medium text-[#1B212D] mb-[10px] block">
+      <div className={cn(cx.root, className)}>
+        <Label htmlFor={id} className={cx.label}>
           {label}
         </Label>
-        <Input
+        <input
           ref={ref}
           id={id}
           type={type}
           placeholder={placeholder}
           disabled={disabled}
-          className={cn(
-            'rounded-[10px] border shadow-none placeholder:text-[#78778B] border-[#F2F2F2] pt-[15px] pr-[25px] pb-[16px] pl-[20px] bg-white transition-colors h-auto',
-            error && 'border-red-500 focus-visible:ring-red-500 bg-red-50'
-          )}
+          className={cx.input}
           {...props}
         />
         {error && (
-          <div className="text-sm text-red-500 flex items-center gap-1 mt-1">
+          <div className={cx.errorContainer}>
             <svg
-              className="w-4 h-4"
+              className={cx.errorIcon}
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"

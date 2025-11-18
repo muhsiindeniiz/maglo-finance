@@ -14,9 +14,9 @@ import { PasswordInput } from '../../components/password-input'
 import { signUpPageVariants, type SignUpPageVariants } from './sign-up-page.cva'
 import { type SignUpPageProps } from './sign-up-page.type'
 import { Logo } from '@/packages/components/logo'
-import { GoogleButton } from '../../components/google-button/google-button'
 import Image from 'next/image'
 import AuthBanner from '../../assets/banner/auth-banner.png'
+import { GoogleButton } from '../../components/google-button'
 
 export const SignUpPage = ({ className }: SignUpPageProps & SignUpPageVariants) => {
   const registerMutation = useRegister()

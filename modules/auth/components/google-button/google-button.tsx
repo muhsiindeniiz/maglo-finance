@@ -3,27 +3,33 @@
 import { Button } from '@/core/ui/components/button'
 import { GoogleLogo } from '@/packages/assets/icons'
 import { cn } from '@/packages/util/cn'
+import { useClassnames } from '@/packages/hook/use-classnames'
+import * as cva from './google-button.cva'
+import { type GoogleButtonProps } from './google-button.type'
 
-interface GoogleButtonProps {
-  onClick?: () => void
-  disabled?: boolean
-  className?: string
-}
+export const GoogleButton = ({
+  onClick,
+  disabled,
+  className,
+  variant = 'default',
+  size = 'default',
+}: GoogleButtonProps) => {
+  const cx = useClassnames({
+    root: cva.rootCva({ variant, size }),
+    icon: cva.iconCva(),
+    text: cva.textCva(),
+  })
 
-export const GoogleButton = ({ onClick, disabled, className }: GoogleButtonProps) => {
   return (
     <Button
       type="button"
       variant="outline"
       onClick={onClick}
       disabled={disabled}
-      className={cn(
-        'w-full h-12 rounded-[10px] border border-[#F5F5F5] bg-white text-[#78778B] text-[16px] font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center gap-3',
-        className
-      )}
+      className={cn(cx.root, className)}
     >
-      <GoogleLogo />
-      Sign in with Google
+      <GoogleLogo className={cx.icon} />
+      <span className={cx.text}>Sign in with Google</span>
     </Button>
   )
 }

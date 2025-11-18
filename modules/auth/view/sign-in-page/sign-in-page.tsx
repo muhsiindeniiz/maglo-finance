@@ -14,9 +14,9 @@ import { PasswordInput } from '../../components/password-input'
 import { signInPageVariants, type SignInPageVariants } from './sign-in-page.cva'
 import { SignInPageProps } from './sign-in-page.type'
 import { Logo } from '@/packages/components/logo'
-import { GoogleButton } from '../../components/google-button/google-button'
 import Image from 'next/image'
 import AuthBanner from '../../assets/banner/auth-banner.png'
+import { GoogleButton } from '../../components/google-button'
 
 export const SignInPage = ({ className }: SignInPageProps & SignInPageVariants) => {
   const loginMutation = useLogin()

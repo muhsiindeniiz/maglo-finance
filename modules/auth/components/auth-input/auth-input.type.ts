@@ -1,4 +1,8 @@
-export interface AuthInputProps {
+import type { ComponentPropsWithoutRef } from 'react'
+
+type NativeProps = Omit<ComponentPropsWithoutRef<'input'>, 'className' | 'size'>
+
+export type AuthInputProps = NativeProps & {
   id: string
   label: string
   type?: 'text' | 'email' | 'password'
@@ -6,4 +10,5 @@ export interface AuthInputProps {
   error?: string
   disabled?: boolean
   className?: string
+  size?: 'default' | 'sm'
 }
