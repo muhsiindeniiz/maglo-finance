@@ -12,7 +12,7 @@ import {
     useRecentTransactions,
     useScheduledTransfers,
 } from '../../hook/use-dashboard-data'
-import { WalletClose } from '@/packages/assets/icons'
+import { WalletAdd, WalletClose } from '@/packages/assets/icons'
 
 export default function DashboardPage() {
     const { data: summaryData, isLoading: summaryLoading } = useDashboardSummary()
@@ -42,7 +42,7 @@ export default function DashboardPage() {
                     <SummaryCard
                         title="Total saved"
                         data={summaryData?.totalSavings}
-                        icon={WalletClose}
+                        icon={WalletAdd}
                         variant="default"
                         isLoading={summaryLoading}
                     />

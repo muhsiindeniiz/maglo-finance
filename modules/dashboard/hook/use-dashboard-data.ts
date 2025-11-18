@@ -55,7 +55,6 @@ export const useRecentTransactions = () => {
         queryKey: ['dashboard', 'recent-transactions'],
         queryFn: async () => {
             const response = await dashboardApi.getRecentTransactions()
-            // Normalize currency codes
             const data = response.data
             if (data?.transactions) {
                 data.transactions = data.transactions.map(transaction => ({
@@ -75,7 +74,6 @@ export const useScheduledTransfers = () => {
         queryKey: ['dashboard', 'scheduled-transfers'],
         queryFn: async () => {
             const response = await dashboardApi.getScheduledTransfers()
-            // Normalize currency codes
             const data = response.data
             if (data?.transfers) {
                 data.transfers = data.transfers.map(transfer => ({

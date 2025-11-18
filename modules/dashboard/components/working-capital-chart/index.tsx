@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/core/ui/components/card'
 import { Skeleton } from '@/core/ui/components/skeleton'
 import {
@@ -22,6 +23,7 @@ import {
     Filler,
     TooltipItem,
     ChartOptions,
+    Plugin,
 } from 'chart.js'
 import { WorkingCapital } from '@/core/api/types'
 import { formatCurrency } from '@/packages/util'
@@ -38,22 +40,44 @@ ChartJS.register(
 )
 
 interface WorkingCapitalChartProps {
-    data?: WorkingCapital | undefined  // Explicitly allow undefined
+    data?: WorkingCapital | undefined
     isLoading?: boolean
+    onPeriodChange?: (period: string) => void
 }
 
 export default function WorkingCapitalChart({
     data,
     isLoading,
+    onPeriodChange,
 }: WorkingCapitalChartProps) {
+    const [selectedPeriod, setSelectedPeriod] = useState('last7Days')
+    const [hiddenDatasets, setHiddenDatasets] = useState<{ [key: string]: boolean }>({})
+
+    useEffect(() => {
+        if (onPeriodChange) {
+            onPeriodChange(selectedPeriod)
+        }
+    }, [selectedPeriod, onPeriodChange])
+
+    const handlePeriodChange = (value: string) => {
+        setSelectedPeriod(value)
+    }
+
+    const toggleDataset = (label: string) => {
+        setHiddenDatasets((prev) => ({
+            ...prev,
+            [label]: !prev[label],
+        }))
+    }
+
     if (isLoading) {
         return (
-            <Card className="rounded-[10px]">
+            <Card className="rounded-[10px] border-[#F5F5F5] shadow-none">
                 <CardHeader>
                     <Skeleton className="h-6 w-48" />
                 </CardHeader>
                 <CardContent>
-                    <Skeleton className="h-[350px] w-full" />
+                    <Skeleton className="h-[280px] w-full" />
                 </CardContent>
             </Card>
         )
@@ -61,18 +85,30 @@ export default function WorkingCapitalChart({
 
     if (!data || !Array.isArray(data.data) || data.data.length === 0) {
         return (
-            <Card className="rounded-[10px]">
+            <Card className="rounded-[10px] border-[#F5F5F5] shadow-none">
                 <CardHeader>
-                    <CardTitle className="text-xl font-bold">Working Capital</CardTitle>
+                    <CardTitle className="text-xl font-semibold">Working Capital</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex h-[350px] items-center justify-center text-muted-foreground">
+                    <div className="flex h-[280px] items-center justify-center text-muted-foreground">
                         No data available
                     </div>
                 </CardContent>
             </Card>
         )
     }
+
+    // Calculate the max value for Y-axis
+    const visibleValues: number[] = []
+    if (!hiddenDatasets['Income']) {
+        visibleValues.push(...data.data.map((item) => item.income))
+    }
+    if (!hiddenDatasets['Expenses']) {
+        visibleValues.push(...data.data.map((item) => item.expense))
+    }
+
+    const maxValue = visibleValues.length > 0 ? Math.max(...visibleValues) : 10000
+    const yAxisMax = Math.ceil(maxValue / 1000) * 1000 + 1000
 
     const chartData = {
         labels: data.data.map((item) => item.month),
@@ -84,12 +120,13 @@ export default function WorkingCapitalChart({
                 backgroundColor: 'rgba(41, 160, 115, 0.05)',
                 tension: 0.4,
                 fill: false,
-                pointRadius: 4,
+                pointRadius: 0,
                 pointHoverRadius: 6,
-                pointBackgroundColor: '#29A073',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
+                pointHoverBackgroundColor: '#5243AA',
+                pointHoverBorderColor: '#FFFFFF',
+                pointHoverBorderWidth: 6,
                 borderWidth: 3,
+                hidden: hiddenDatasets['Income'],
             },
             {
                 label: 'Expenses',
@@ -98,98 +135,137 @@ export default function WorkingCapitalChart({
                 backgroundColor: 'rgba(200, 238, 68, 0.05)',
                 tension: 0.4,
                 fill: false,
-                pointRadius: 4,
+                pointRadius: 0,
                 pointHoverRadius: 6,
-                pointBackgroundColor: '#C8EE44',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
+                pointHoverBackgroundColor: '#5243AA',
+                pointHoverBorderColor: '#FFFFFF',
+                pointHoverBorderWidth: 6,
                 borderWidth: 3,
+                hidden: hiddenDatasets['Expenses'],
             },
         ],
+    }
+
+    // Custom plugin for vertical hover line with gradient background
+    const hoverLinePlugin: Plugin<'line'> = {
+        id: 'hoverLine',
+        afterDatasetsDraw(chart) {
+            const { ctx, tooltip, chartArea } = chart
+
+            if (tooltip?.getActiveElements().length) {
+                const activePoint = tooltip.getActiveElements()[0]
+                const x = activePoint.element.x
+
+                // Draw gradient background
+                const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom)
+                gradient.addColorStop(0, 'rgba(250, 251, 254, 0)')
+                gradient.addColorStop(0.6656, '#F2F6FC')
+
+                ctx.save()
+                ctx.fillStyle = gradient
+                ctx.fillRect(x - 25, chartArea.top, 50, chartArea.bottom - chartArea.top)
+                ctx.restore()
+            }
+        },
     }
 
     const options: ChartOptions<'line'> = {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+            padding: {
+                top: 20,
+            },
+        },
         plugins: {
             legend: {
-                display: true,
-                position: 'top',
-                align: 'end',
-                labels: {
-                    usePointStyle: true,
-                    pointStyle: 'circle',
-                    padding: 20,
-                    font: {
-                        size: 14,
-                        family: 'Inter, sans-serif',
-                        weight: 500,
-                    },
-                    color: '#1B212D',
-                },
+                display: false,
             },
             tooltip: {
                 enabled: true,
-                mode: 'index',
+                mode: 'nearest',
                 intersect: false,
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                axis: 'x',
+                backgroundColor: '#F3F6F8',
+                titleColor: '#1B212D',
+                bodyColor: '#1B212D',
+                borderColor: 'transparent',
+                borderWidth: 0,
                 titleFont: {
-                    size: 14,
-                    weight: 'bold',
+                    size: 12,
+                    weight: 'normal',
                 },
                 bodyFont: {
-                    size: 13,
+                    size: 12,
+                    weight: 'normal',
                 },
-                padding: 12,
-                displayColors: true,
+                padding: {
+                    top: 6,
+                    bottom: 7,
+                    left: 10,
+                    right: 10,
+                },
+                displayColors: false,
+                yAlign: 'bottom',
+                xAlign: 'center',
+                caretSize: 6,
+                caretPadding: 10,
                 callbacks: {
+                    title: function () {
+                        return ''
+                    },
                     label: function (context: TooltipItem<'line'>) {
-                        let label = context.dataset.label || ''
-                        if (label) {
-                            label += ': '
-                        }
                         if (context.parsed.y !== null) {
-                            label += formatCurrency(context.parsed.y, data.currency)
+                            return formatCurrency(context.parsed.y, data.currency)
                         }
-                        return label
+                        return ''
                     },
                 },
             },
         },
         scales: {
             y: {
-                beginAtZero: false,
+                beginAtZero: true,
+                max: yAxisMax,
                 grid: {
-                    color: 'rgba(0, 0, 0, 0.05)',
+                    color: 'rgba(0, 0, 0, 0)',
+                    drawTicks: false,
                 },
                 ticks: {
                     callback: function (tickValue: string | number) {
                         const numValue = Number(tickValue)
-                        if (numValue >= 1000) {
-                            return `${(numValue / 1000).toFixed(0)}K`
-                        }
-                        return numValue.toString()
+                        return `${(numValue / 1000).toFixed(0)}K`
                     },
                     font: {
                         size: 12,
+                        weight: '400',
                     },
-                    color: '#64748b',
+                    color: '#929EAE',
                     padding: 10,
+                    stepSize: yAxisMax / 5,
                 },
                 border: {
                     display: false,
                 },
             },
             x: {
+                offset: true,
                 grid: {
-                    display: false,
+                    color: '#FFF4FE',
+                    drawTicks: false,
+                    lineWidth: 1,
+                    offset: false,
                 },
                 ticks: {
                     font: {
                         size: 12,
+                        weight: '400',
                     },
-                    color: '#64748b',
+                    color: '#929EAE',
                     padding: 10,
+                    autoSkip: false,
+                    maxRotation: 0,
+                    minRotation: 0,
                 },
                 border: {
                     display: false,
@@ -203,26 +279,62 @@ export default function WorkingCapitalChart({
         },
     }
 
+    const periodOptions = [
+        { value: 'last7Days', label: 'Last 7 days' },
+        { value: 'last30Days', label: 'Last 30 days' },
+        { value: 'last60Days', label: 'Last 60 days' },
+        { value: 'last90Days', label: 'Last 90 days' },
+        { value: 'allTime', label: 'All Time' },
+    ]
+
     return (
-        <Card className="rounded-[10px]">
+        <Card className="rounded-[10px] border-[#F5F5F5] shadow-none">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                <CardTitle className="text-xl font-bold text-[#1B212D]">
+                <CardTitle className="text-xl font-semibold text-[#1B212D]">
                     Working Capital
                 </CardTitle>
-                <Select defaultValue="7days">
-                    <SelectTrigger className="w-[140px]">
-                        <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="7days">Last 7 days</SelectItem>
-                        <SelectItem value="30days">Last 30 days</SelectItem>
-                        <SelectItem value="90days">Last 90 days</SelectItem>
-                    </SelectContent>
-                </Select>
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4">
+                        <button
+                            type="button"
+                            onClick={() => toggleDataset('Income')}
+                            className="flex items-center cursor-pointer transition-opacity hover:opacity-80"
+                            style={{ gap: '9px', opacity: hiddenDatasets['Income'] ? 0.4 : 1 }}
+                        >
+                            <div className="h-2 w-2 rounded-full bg-[#29A073]" />
+                            <span className="text-[12px] font-normal text-[#1B212D]">
+                                Income
+                            </span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => toggleDataset('Expenses')}
+                            className="flex items-center cursor-pointer transition-opacity hover:opacity-80"
+                            style={{ gap: '9px', opacity: hiddenDatasets['Expenses'] ? 0.4 : 1 }}
+                        >
+                            <div className="h-2 w-2 rounded-full bg-[#C8EE44]" />
+                            <span className="text-[12px] font-normal text-[#1B212D]">
+                                Expenses
+                            </span>
+                        </button>
+                    </div>
+                    <Select value={selectedPeriod} onValueChange={handlePeriodChange}>
+                        <SelectTrigger className="w-auto border-none bg-[#F8F8F8] text-[12px] text-[#1B212D] rounded-[5px] pl-[10px] pr-2 py-[6px] h-auto focus:ring-0 focus:ring-offset-0">
+                            <SelectValue placeholder="Last 7 days" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {periodOptions.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
             </CardHeader>
             <CardContent>
-                <div className="h-[350px]">
-                    <Line data={chartData} options={options} />
+                <div className="h-[280px]">
+                    <Line data={chartData} options={options} plugins={[hoverLinePlugin]} />
                 </div>
             </CardContent>
         </Card>

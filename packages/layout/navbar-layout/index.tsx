@@ -10,13 +10,16 @@ import {
 } from '@/core/ui/components/dropdown-menu'
 import { useAuthStore } from '@/packages/hook/use-auth'
 import { ChevronDown, Notification, Search } from '@/packages/assets/icons'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 interface NavbarLayoutProps {
   title: string
 }
 
 export default function NavbarLayout({ title }: NavbarLayoutProps) {
-  const { user } = useAuthStore()
+  const { user, clearAuth } = useAuthStore()
+  const router = useRouter()
 
   const getInitials = (name: string) => {
     return name
@@ -26,20 +29,25 @@ export default function NavbarLayout({ title }: NavbarLayoutProps) {
       .toUpperCase()
   }
 
+  const handleLogout = () => {
+    clearAuth()
+    toast.success('Logged out successfully')
+    router.push('/auth/login')
+  }
+
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between bg-background px-6">
+    <header className="sticky top-0 z-30 flex py-[1px] items-center justify-between bg-background px-6">
       <h1 className="text-[25px] font-semibold text-[#1B212D]">{title}</h1>
 
       <div className="flex items-center">
         <Button variant="ghost" size="icon" className="h-10 w-10">
-          <Search className="h-6 w-6 text-[#929EAE]" strokeWidth={2} />
+          <Search className="h-12 w-12 text-[#929EAE]" strokeWidth={2} />
         </Button>
 
         <div className="w-[45px]" />
 
         <Button variant="ghost" size="icon" className="relative h-10 w-10">
           <Notification className="h-6 w-6 text-[#929EAE]" strokeWidth={2} />
-          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive" />
         </Button>
 
         <div className="w-[45px]" />
@@ -61,9 +69,15 @@ export default function NavbarLayout({ title }: NavbarLayoutProps) {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/settings')} className="cursor-pointer">
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/settings')} className="cursor-pointer">
+              Settings
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+              Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

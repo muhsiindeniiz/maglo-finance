@@ -1,10 +1,10 @@
 export const formatCurrency = (
   amount: number,
   currency: string = 'USD',
-  locale: string = 'en-US'
+  locale?: string
 ): string => {
   let currencyCode = currency.toUpperCase().trim()
-  
+
   const symbolToCurrency: Record<string, string> = {
     '$': 'USD',
     '€': 'EUR',
@@ -17,6 +17,18 @@ export const formatCurrency = (
     'A$': 'AUD',
   }
 
+  const currencyToLocale: Record<string, string> = {
+    'USD': 'en-US',
+    'EUR': 'de-DE',
+    'GBP': 'en-GB',
+    'JPY': 'ja-JP',
+    'TRY': 'tr-TR',
+    'INR': 'en-IN',
+    'RUB': 'ru-RU',
+    'CAD': 'en-CA',
+    'AUD': 'en-AU',
+  }
+
   if (symbolToCurrency[currency]) {
     currencyCode = symbolToCurrency[currency]
   }
@@ -26,21 +38,30 @@ export const formatCurrency = (
     currencyCode = 'USD'
   }
 
+  const finalLocale = locale || currencyToLocale[currencyCode] || 'en-US'
+
+  const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount
+
+  if (isNaN(numericAmount)) {
+    console.error(`Invalid amount: ${amount}`)
+    return '$0.00'
+  }
+
   try {
-    return new Intl.NumberFormat(locale, {
+    return new Intl.NumberFormat(finalLocale, {
       style: 'currency',
       currency: currencyCode,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(amount)
+    }).format(numericAmount)
   } catch (error) {
     console.error(`Error formatting currency: ${error}`)
-    return new Intl.NumberFormat(locale, {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(amount)
+    }).format(numericAmount)
   }
 }
 
@@ -89,19 +110,36 @@ export const formatDate = (
 export const formatCardNumber = (cardNumber: string): string => {
   if (!cardNumber) return ''
   const cleaned = cardNumber.replace(/\D/g, '')
-  return cleaned.replace(/(\d{4})(?=\d)/g, '$1 ')
+  return cleaned.replace(/(\d{4})(?=\d)/g, '$1  ')
 }
 
 export const maskCardNumber = (cardNumber: string): string => {
   if (!cardNumber) return ''
   const cleaned = cardNumber.replace(/\D/g, '')
-  const lastFour = cleaned.slice(-4)
-  return `**** **** **** ${lastFour}`
+
+  if (cleaned.length < 8) return cleaned
+
+  const firstEight = cleaned.slice(0, 8)
+  return `${firstEight}****`
 }
 
-export const getCurrencySymbol = (currencyCode: string, locale: string = 'en-US'): string => {
+export const getCurrencySymbol = (currencyCode: string, locale?: string): string => {
+  const currencyToLocale: Record<string, string> = {
+    'USD': 'en-US',
+    'EUR': 'de-DE',
+    'GBP': 'en-GB',
+    'JPY': 'ja-JP',
+    'TRY': 'tr-TR',
+    'INR': 'en-IN',
+    'RUB': 'ru-RU',
+    'CAD': 'en-CA',
+    'AUD': 'en-AU',
+  }
+
+  const finalLocale = locale || currencyToLocale[currencyCode.toUpperCase()] || 'en-US'
+
   try {
-    return new Intl.NumberFormat(locale, {
+    return new Intl.NumberFormat(finalLocale, {
       style: 'currency',
       currency: currencyCode.toUpperCase(),
       minimumFractionDigits: 0,

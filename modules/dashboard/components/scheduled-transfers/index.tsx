@@ -18,7 +18,7 @@ export default function ScheduledTransfers({
 }: ScheduledTransfersProps) {
     if (isLoading) {
         return (
-            <Card className="rounded-[10px]">
+            <Card className="rounded-[10px] border-none shadow-none">
                 <CardHeader>
                     <Skeleton className="h-6 w-48" />
                 </CardHeader>
@@ -42,7 +42,7 @@ export default function ScheduledTransfers({
 
     if (!data || !Array.isArray(data.transfers) || data.transfers.length === 0) {
         return (
-            <Card className="rounded-[10px]">
+            <Card className="rounded-[10px] border-none shadow-none">
                 <CardHeader>
                     <CardTitle className="text-xl font-bold">Scheduled Transfers</CardTitle>
                 </CardHeader>
@@ -55,27 +55,19 @@ export default function ScheduledTransfers({
         )
     }
 
-    const getInitials = (name: string) => {
-        return name
-            .split(' ')
-            .map((n) => n[0])
-            .join('')
-            .toUpperCase()
-    }
-
     return (
-        <Card className="rounded-[10px]">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+        <Card className="rounded-[10px] border-none shadow-none p-0">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-[23px] px-0 pt-t">
                 <CardTitle className="text-xl font-bold">Scheduled Transfers</CardTitle>
                 <Button variant="ghost" size="sm" className="text-emerald-600 hover:text-emerald-700" asChild>
-                    <Link href="/transfers">
+                    <Link href="/transfers" className='text-[14px] font-semibold'>
                         View All
                         <ArrowRight className="ml-1 h-4 w-4" />
                     </Link>
                 </Button>
             </CardHeader>
-            <CardContent>
-                <div className="space-y-3">
+            <CardContent className='p-0'>
+                <div className="px-0">
                     {data.transfers.map((transfer) => {
                         const displayName = transfer.recipientName || transfer.name
                         const displayAvatar = transfer.recipientAvatar || transfer.image
@@ -84,25 +76,25 @@ export default function ScheduledTransfers({
                         return (
                             <div
                                 key={transfer.id}
-                                className="flex items-center justify-between rounded-lg p-3 transition-colors hover:bg-accent"
+                                className={`flex items-center justify-between rounded-lg py-3 px-0 transition-colors ${data.transfers.indexOf(transfer) === data.transfers.length - 1
+                                    ? ''
+                                    : 'border-b border-b-[#FAFAFA]'
+                                    }`}
                             >
                                 <div className="flex items-center gap-3">
-                                    <Avatar className="h-12 w-12">
+                                    <Avatar className="h-[33px] w-[33px]">
                                         <AvatarImage src={displayAvatar} />
-                                        <AvatarFallback className="bg-slate-100 text-sm font-semibold">
-                                            {getInitials(displayName)}
-                                        </AvatarFallback>
                                     </Avatar>
                                     <div>
-                                        <p className="font-medium">{displayName}</p>
-                                        <p className="text-sm text-muted-foreground">
+                                        <p className="font-semibold text-[14px] text-[#1B212D] mb-[4px]">{displayName}</p>
+                                        <p className="text-[12px] text-[#929EAE]">
                                             {formatDate(displayDate, 'long')}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <p className="font-semibold">
-                                        - {formatCurrency(transfer.amount, transfer.currency)}
+                                    <p className="font-semibold text-black text-base">
+                                        {formatCurrency(transfer.amount, transfer.currency)}
                                     </p>
                                 </div>
                             </div>

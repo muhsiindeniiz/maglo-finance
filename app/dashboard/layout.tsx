@@ -13,7 +13,7 @@ export default function DashboardLayout({
                 <div className="pt-[14px]">
                     <NavbarLayout title="Dashboard" />
                 </div>
-                <main className="flex-1 overflow-y-auto px-6 pt-[24px]">
+                <main className="flex-1 overflow-y-auto px-6 pt-[29px]">
                     {children}
                 </main>
             </div>

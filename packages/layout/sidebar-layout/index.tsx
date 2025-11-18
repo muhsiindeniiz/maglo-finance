@@ -49,9 +49,9 @@ export default function SidebarLayout() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r bg-background">
+    <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-[#FAFAFA]">
       <div className="flex h-full flex-col pt-[14px]">
-        <div className="flex h-16 items-center border-b px-6">
+        <div className="flex h-16 items-center px-6">
           <Link href="/dashboard" className="flex items-center gap-2">
             <Logo className="h-8 w-auto" />
           </Link>
@@ -81,7 +81,7 @@ export default function SidebarLayout() {
           })}
         </nav>
 
-        <div className="space-y-1 border-t p-4">
+        <div className="space-y-1 p-4">
           <Link
             href="/help"
             className="flex items-center gap-3 rounded-lg px-[15px] py-[14px] text-sm font-semibold text-[#929EAE] transition-colors hover:bg-[#C8EE44] hover:text-[#1B212D]"
@@ -92,7 +92,7 @@ export default function SidebarLayout() {
 
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-[15px] py-[14px] text-sm font-semibold text-[#929EAE] transition-colors hover:bg-[#C8EE44] hover:text-[#1B212D]"
+            className="flex cursor-pointer w-full items-center gap-3 rounded-lg px-[15px] py-[14px] text-sm font-semibold text-[#929EAE] transition-colors hover:bg-[#C8EE44] hover:text-[#1B212D]"
           >
             <Logout className="h-5 w-5" strokeWidth={2} />
             <span>Logout</span>

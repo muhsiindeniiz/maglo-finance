@@ -3,7 +3,7 @@ import { Skeleton } from '@/core/ui/components/skeleton'
 import { Button } from '@/core/ui/components/button'
 import { RecentTransactions as RecentTransactionsType } from '@/core/api/types'
 import { formatCurrency, formatDate } from '@/packages/util'
-import { ArrowRight } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -18,7 +18,7 @@ export default function RecentTransactions({
 }: RecentTransactionsProps) {
     if (isLoading) {
         return (
-            <Card className="rounded-[10px]">
+            <Card className="rounded-[10px] border-[#F5F5F5] shadow-none">
                 <CardHeader>
                     <Skeleton className="h-6 w-48" />
                 </CardHeader>
@@ -42,9 +42,11 @@ export default function RecentTransactions({
 
     if (!data || !Array.isArray(data.transactions) || data.transactions.length === 0) {
         return (
-            <Card className="rounded-[10px]">
+            <Card className="rounded-[10px] border-[#F5F5F5] shadow-none">
                 <CardHeader>
-                    <CardTitle className="text-xl font-bold">Recent Transaction</CardTitle>
+                    <CardTitle className="text-[18px] font-semibold text-[#1B212D]">
+                        Recent Transaction
+                    </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="flex h-[200px] items-center justify-center text-muted-foreground">
@@ -56,43 +58,55 @@ export default function RecentTransactions({
     }
 
     return (
-        <Card className="rounded-[10px]">
+        <Card className="rounded-[10px] border-[#F5F5F5] shadow-none">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                <CardTitle className="text-xl font-bold">Recent Transaction</CardTitle>
-                <Button variant="ghost" size="sm" className="text-emerald-600 hover:text-emerald-700" asChild>
-                    <Link href="/transactions">
+                <CardTitle className="text-[18px] font-semibold text-[#1B212D]">
+                    Recent Transaction
+                </CardTitle>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-auto p-0 hover:bg-transparent"
+                    asChild
+                >
+                    <Link
+                        href="/transactions"
+                        className="flex items-center text-[14px] font-semibold text-[#29A073]"
+                        style={{ gap: '6px' }}
+                    >
                         View All
-                        <ArrowRight className="ml-1 h-4 w-4" />
+                        <ChevronRight className="h-[10px] w-[10px]" strokeWidth={3} />
                     </Link>
                 </Button>
             </CardHeader>
             <CardContent>
-                <div className="space-y-1">
-                    <div className="grid grid-cols-4 gap-4 px-4 py-2 text-xs font-medium text-muted-foreground">
-                        <div>NAME/BUSINESS</div>
-                        <div>TYPE</div>
-                        <div>AMOUNT</div>
-                        <div className="text-right">DATE</div>
+                <div className="space-y-0">
+                    <div className="grid grid-cols-4 gap-4 px-4 py-2 text-[12px] font-semibold text-[#929EAE]">
+                        <div className='text-left'>NAME/BUSINESS</div>
+                        <div className='text-center'>TYPE</div>
+                        <div className='text-center'>AMOUNT</div>
+                        <div className='text-center'>DATE</div>
                     </div>
 
                     <div className="space-y-0">
-                        {data.transactions.map((transaction) => {
+                        {data.transactions.map((transaction, index) => {
                             const displayIcon = transaction.icon || transaction.image
 
                             return (
                                 <div
                                     key={transaction.id}
-                                    className="grid grid-cols-4 gap-4 rounded-lg px-4 py-3 transition-colors hover:bg-accent"
+                                    className={`grid grid-cols-4 gap-4 px-4 py-3 transition-colors hover:bg-accent ${index !== data.transactions.length - 1 ? 'border-b border-[#F5F5F5]' : ''
+                                        }`}
                                 >
-                                    <div className="flex items-center gap-3">
-                                        <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg bg-slate-100">
+                                    <div className="flex items-center justify-center gap-3">
+                                        <div className="relative h-12 w-12 flex justify-center items-center flex-shrink-0 overflow-hidden">
                                             {displayIcon ? (
                                                 <Image
                                                     src={displayIcon}
                                                     alt={transaction.name}
-                                                    width={48}
-                                                    height={48}
-                                                    className="object-contain p-2"
+                                                    width={40}
+                                                    height={40}
+                                                    className="object-contain"
                                                     unoptimized
                                                 />
                                             ) : (
@@ -102,24 +116,24 @@ export default function RecentTransactions({
                                             )}
                                         </div>
                                         <div className="min-w-0 flex-1">
-                                            <p className="truncate font-medium">{transaction.name}</p>
-                                            <p className="truncate text-sm text-muted-foreground">
+                                            <p className="truncate text-sm font-medium text-[#1B212D]">{transaction.name}</p>
+                                            <p className="truncate text-[12px] text-[#929EAE] font-normal">
                                                 {transaction.business}
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center">
-                                        <span className="text-sm text-muted-foreground">
+                                    <div className="flex items-center justify-center">
+                                        <span className="text-sm text-[#929EAE] font-medium">
                                             {transaction.type}
                                         </span>
                                     </div>
-                                    <div className="flex items-center">
-                                        <span className="font-semibold">
+                                    <div className="flex items-center justify-center">
+                                        <span className="font-semibold text-[#1B212D]">
                                             {formatCurrency(transaction.amount, transaction.currency)}
                                         </span>
                                     </div>
-                                    <div className="flex items-center justify-end">
-                                        <span className="text-sm text-muted-foreground">
+                                    <div className="flex items-center justify-center">
+                                        <span className="text-sm text-[#929EAE] font-medium">
                                             {formatDate(transaction.date, 'short')}
                                         </span>
                                     </div>

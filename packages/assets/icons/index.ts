@@ -11,3 +11,8 @@ export { default as Logout } from './logout';
 export { default as WalletClose } from './wallet-close';
 export { default as Ellipses } from './ellipses';
 export { default as ChevronDown } from './chevron-down';
+export { default as WalletAdd } from './wallet-add';
+export { default as Wireless } from './wireless';
+export { default as SimCard } from './sim-card';
+export { default as Visa } from './visa';
+export { default as MasterCard } from './mastercard';

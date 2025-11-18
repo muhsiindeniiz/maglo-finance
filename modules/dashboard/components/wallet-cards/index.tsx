@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/core/ui/components/c
 import { Skeleton } from '@/core/ui/components/skeleton'
 import { Wallet, Card as CardType } from '@/core/api/types'
 import { formatCardNumber, maskCardNumber } from '@/packages/util'
-import { Wifi, MoreVertical } from 'lucide-react'
 import { Button } from '@/core/ui/components/button'
+import { Ellipses, SimCard, Wireless, Visa, MasterCard } from '@/packages/assets/icons'
 
 interface WalletCardsProps {
     data?: Wallet | undefined
@@ -13,7 +13,7 @@ interface WalletCardsProps {
 export default function WalletCards({ data, isLoading }: WalletCardsProps) {
     if (isLoading) {
         return (
-            <Card className="rounded-[10px]">
+            <Card className="rounded-[10px] border-none shadow-none">
                 <CardHeader>
                     <Skeleton className="h-6 w-24" />
                 </CardHeader>
@@ -29,7 +29,7 @@ export default function WalletCards({ data, isLoading }: WalletCardsProps) {
 
     if (!data || !Array.isArray(data.cards) || data.cards.length === 0) {
         return (
-            <Card className="rounded-[10px]">
+            <Card className="rounded-[10px] border-none shadow-none pt-0">
                 <CardHeader>
                     <CardTitle className="text-xl font-bold">Wallet</CardTitle>
                 </CardHeader>
@@ -57,78 +57,105 @@ export default function WalletCards({ data, isLoading }: WalletCardsProps) {
         return undefined
     }
 
+    const formatBankName = (bankName: string): string => {
+        return bankName.replace(/^Maglo\s*\|\s*/i, '')
+    }
+
     return (
-        <Card className="rounded-[10px]">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                <CardTitle className="text-xl font-bold">Wallet</CardTitle>
-                <Button variant="ghost" size="icon">
-                    <MoreVertical className="h-5 w-5" />
+        <Card className="rounded-[10px] border-none shadow-none p-0">
+            <CardHeader className="flex flex-row items-center justify-between px-0 space-y-0 pb-4 pt-0">
+                <CardTitle className="text-xl font-semibold text-[#1B212D]">Wallet</CardTitle>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Ellipses className="h-5 w-5" />
                 </Button>
             </CardHeader>
-            <CardContent className="space-y-4">
-                <div className="relative h-48 overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 p-6 text-white shadow-xl">
+            <CardContent className="space-y-4 px-0">
+                <div
+                    className="relative h-[210px] overflow-hidden rounded-2xl p-6 text-white shadow-xl"
+                    style={{
+                        background: 'linear-gradient(104.3deg, #4A4A49 2.66%, #20201F 90.57%)',
+                    }}
+                >
                     <div className="flex h-full flex-col justify-between">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-slate-300">Maglo.</p>
-                                <p className="mt-0.5 text-xs text-slate-400">
-                                    {primaryCard.bank}
+                        <div className="flex items-center justify-between">
+                            <div className='flex items-center gap-2'>
+                                <p className="text-base font-bold text-[#FFFFFF]">Maglo.</p>
+                                <svg width="1" height="20" viewBox="0 0 1 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="1" height="20" fill="#626261" />
+                                </svg>
+                                <p className="mt-0.5 text-xs text-[#626260] font-medium">
+                                    {formatBankName(primaryCard.bank)}
                                 </p>
                             </div>
-                            <Wifi className="h-6 w-6 rotate-90 text-slate-400" />
                         </div>
 
                         <div>
-                            <div className="mb-1 flex h-8 w-12 items-center justify-center rounded bg-slate-700/50">
-                                <div className="h-6 w-8 rounded-sm bg-gradient-to-br from-amber-200 to-amber-400" />
+                            <div className="mb-1 w-full flex h-8 w-12 items-center justify-between rounded">
+                                <SimCard />
+                                <Wireless />
                             </div>
-                            <p className="mt-4 font-mono text-xl tracking-wider">
+                            <p
+                                className="mt-4 text-[17px] text-white font-bold font-mono tracking-wider"
+                            >
                                 {formatCardNumber(primaryCard.cardNumber)}
                             </p>
+                            <div className="w-max mt-3 ml-auto">
+                                <MasterCard />
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {secondaryCard && (
-                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-300 to-slate-400 p-6 shadow-lg">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="text-sm font-semibold text-slate-800">Maglo.</p>
-                                <p className="mt-0.5 text-xs text-slate-600">
-                                    {secondaryCard.bank}
+                    <div
+                        className="overflow-hidden rounded-[15px] p-4 shadow-lg -mt-20 w-full max-w-[calc(100%_-_30px)] mx-auto"
+                        style={{
+                            background:
+                                'linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%)',
+                            backdropFilter: 'blur(5px)',
+                        }}
+                    >
+                        <div className="flex items-center justify-between">
+                            <div className='flex items-center gap-2'>
+                                <p className="text-base font-bold text-[#FFFFFF]">Maglo.</p>
+                                <svg width="1" height="20" viewBox="0 0 1 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="1" height="20" fill="#F5F5F5" />
+                                </svg>
+                                <p className="text-xs text-[#F5F5F5] font-medium">
+                                    {formatBankName(secondaryCard.bank)}
                                 </p>
                             </div>
-                            <div className="absolute right-6 top-6">
-                                <Wifi className="h-6 w-6 rotate-90 text-slate-600" />
-                            </div>
+                        </div>
+
+                        <div className="mt-[13px] flex items-start justify-between">
+                            <SimCard className="text-[#1B212D]" />
+                            <Wireless />
                         </div>
 
                         <div className="mt-8">
-                            <div className="mb-1 flex h-8 w-12 items-center justify-center rounded bg-white/30">
-                                <div className="h-6 w-8 rounded-sm bg-gradient-to-br from-orange-400 to-pink-500" />
+                            <div className="flex items-center justify-between">
+                                <p
+                                    className="font-mono tracking-wider text-base font-bold text-[#1B212D]"
+                                >
+                                    {maskCardNumber(secondaryCard.cardNumber)}
+                                </p>
+                                <div className="flex items-center gap-2">
+                                    {getBrandName(secondaryCard.network) === 'visa' && (
+                                        <Visa className="h-6 w-auto" />
+                                    )}
+                                    {getBrandName(secondaryCard.network) === 'mastercard' && (
+                                        <MasterCard className="h-6 w-auto" />
+                                    )}
+                                </div>
                             </div>
+                            <p
+                                className="mt-[5px] font-medium text-[12px] text-[#929EAE] font-medium"
+                            >
+                                {getExpiryDate(secondaryCard)}
+                            </p>
                         </div>
                     </div>
                 )}
-
-                <div className="rounded-lg bg-slate-50 p-4">
-                    <div className="flex items-center justify-between">
-                        <p className="font-mono text-lg font-semibold">
-                            {maskCardNumber(primaryCard.cardNumber)}
-                        </p>
-                        <div className="flex items-center gap-2">
-                            {getBrandName(primaryCard.network) === 'visa' && (
-                                <div className="text-sm font-bold text-blue-600">VISA</div>
-                            )}
-                            {getBrandName(primaryCard.network) === 'mastercard' && (
-                                <div className="text-sm font-bold text-red-600">MASTERCARD</div>
-                            )}
-                        </div>
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                        {getExpiryDate(primaryCard)}
-                    </p>
-                </div>
             </CardContent>
         </Card>
     )

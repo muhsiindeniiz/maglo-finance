@@ -6,7 +6,7 @@ interface SearchIconProps extends SVGProps<SVGSVGElement> {
 }
 
 const SearchIcon = forwardRef<SVGSVGElement, SearchIconProps>(
-    ({ width = 24, height = 24, ...props }, ref) => {
+    ({ width, height, className, ...props }, ref) => {
         return (
             <svg
                 width={width}
@@ -15,6 +15,7 @@ const SearchIcon = forwardRef<SVGSVGElement, SearchIconProps>(
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 ref={ref}
+                className={className}
                 {...props}
             >
                 <path

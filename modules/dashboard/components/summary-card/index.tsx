@@ -22,7 +22,7 @@ export default function SummaryCard({
 }: SummaryCardProps) {
     if (isLoading) {
         return (
-            <Card className="rounded-[10px]">
+            <Card className="rounded-[10px] border-none shadow-none">
                 <CardContent className="px-5 py-6">
                     <div className="flex items-center gap-4">
                         <Skeleton className="h-[42px] w-[42px] rounded-full" />
@@ -41,13 +41,13 @@ export default function SummaryCard({
     return (
         <Card
             className={cn(
-                'rounded-[10px]',
+                'rounded-[10px] border-none shadow-none',
                 isBalance ? 'bg-[#363A3F]' : 'bg-[#F8F8F8]'
             )}
         >
             <CardContent className="px-5 py-6">
                 <div className="flex items-center gap-4">
-                    <div
+                    <div> <div
                         className={cn(
                             'flex h-[42px] w-[42px] items-center justify-center rounded-full',
                             isBalance ? 'bg-[#4E5257]' : 'bg-[#EBE8E8]'
@@ -60,7 +60,7 @@ export default function SummaryCard({
                             )}
                             strokeWidth={2}
                         />
-                    </div>
+                    </div></div>
                     <div className="flex-1">
                         <p
                             className={cn(
