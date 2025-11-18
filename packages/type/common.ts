@@ -7,13 +7,14 @@ export type FlattenObjectKeys<T extends Record<string, unknown>, Key = keyof T> 
     : `${Key}`
   : never
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type MergeRecords<T extends any[]> = T extends [infer First, ...infer Rest]
   ? First extends object | undefined
     ? Rest extends any[]
       ? MergeRecords<Rest> & First
       : First
-    : {}
-  : {}
+    : Record<string, never>
+  : Record<string, never>
 
 export type OptionalField<T, K extends keyof T> = Omit<T, K> & {
   [P in keyof T]?: T[P] | undefined
@@ -23,7 +24,7 @@ export type UnionRecord<R extends object> = R[keyof R]
 
 export type Prettify<T> = {
   [K in keyof T]: T[K]
-} & {}
+} & Record<string, never>
 
 export type DeepNullable<T> = Prettify<{
   [K in keyof T]: T[K] extends object ? DeepNullable<T[K]> : T[K] | null

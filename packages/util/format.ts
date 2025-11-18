@@ -6,27 +6,27 @@ export const formatCurrency = (
   let currencyCode = currency.toUpperCase().trim()
 
   const symbolToCurrency: Record<string, string> = {
-    '$': 'USD',
+    $: 'USD',
     '€': 'EUR',
     '£': 'GBP',
     '¥': 'JPY',
     '₺': 'TRY',
     '₹': 'INR',
     '₽': 'RUB',
-    'C$': 'CAD',
-    'A$': 'AUD',
+    C$: 'CAD',
+    A$: 'AUD',
   }
 
   const currencyToLocale: Record<string, string> = {
-    'USD': 'en-US',
-    'EUR': 'de-DE',
-    'GBP': 'en-GB',
-    'JPY': 'ja-JP',
-    'TRY': 'tr-TR',
-    'INR': 'en-IN',
-    'RUB': 'ru-RU',
-    'CAD': 'en-CA',
-    'AUD': 'en-AU',
+    USD: 'en-US',
+    EUR: 'de-DE',
+    GBP: 'en-GB',
+    JPY: 'ja-JP',
+    TRY: 'tr-TR',
+    INR: 'en-IN',
+    RUB: 'ru-RU',
+    CAD: 'en-CA',
+    AUD: 'en-AU',
   }
 
   if (symbolToCurrency[currency]) {
@@ -54,8 +54,8 @@ export const formatCurrency = (
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(numericAmount)
-  } catch (error) {
-    console.error(`Error formatting currency: ${error}`)
+  } catch (_error) {
+    console.error('Error formatting currency')
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -125,15 +125,15 @@ export const maskCardNumber = (cardNumber: string): string => {
 
 export const getCurrencySymbol = (currencyCode: string, locale?: string): string => {
   const currencyToLocale: Record<string, string> = {
-    'USD': 'en-US',
-    'EUR': 'de-DE',
-    'GBP': 'en-GB',
-    'JPY': 'ja-JP',
-    'TRY': 'tr-TR',
-    'INR': 'en-IN',
-    'RUB': 'ru-RU',
-    'CAD': 'en-CA',
-    'AUD': 'en-AU',
+    USD: 'en-US',
+    EUR: 'de-DE',
+    GBP: 'en-GB',
+    JPY: 'ja-JP',
+    TRY: 'tr-TR',
+    INR: 'en-IN',
+    RUB: 'ru-RU',
+    CAD: 'en-CA',
+    AUD: 'en-AU',
   }
 
   const finalLocale = locale || currencyToLocale[currencyCode.toUpperCase()] || 'en-US'
@@ -148,7 +148,7 @@ export const getCurrencySymbol = (currencyCode: string, locale?: string): string
       .format(0)
       .replace(/\d/g, '')
       .trim()
-  } catch (error) {
+  } catch (_error) {
     return currencyCode
   }
 }

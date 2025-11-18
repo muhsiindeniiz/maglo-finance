@@ -8,7 +8,10 @@ interface RootBodyProps {
 
 export const RootBody = ({ children, className }: RootBodyProps) => {
   return (
-    <body className={cn('min-h-screen bg-background font-sans antialiased', className)} suppressHydrationWarning>
+    <body
+      className={cn('min-h-screen bg-background font-sans antialiased', className)}
+      suppressHydrationWarning
+    >
       {children}
     </body>
   )

@@ -7,7 +7,15 @@ import { useAuthStore } from '@/packages/hook/use-auth'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
-import { Help, Home, Invoices, Logout, Settings, Transaction, WalletsOpen } from '@/packages/assets/icons'
+import {
+  Help,
+  Home,
+  Invoices,
+  Logout,
+  Settings,
+  Transaction,
+  WalletsOpen,
+} from '@/packages/assets/icons'
 import { Logo } from '@/packages/components/logo'
 const menuItems = [
   {
@@ -58,7 +66,7 @@ export default function SidebarLayout() {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto p-4">
-          {menuItems.map((item) => {
+          {menuItems.map(item => {
             const Icon = item.icon
             const isActive = pathname === item.href
 
