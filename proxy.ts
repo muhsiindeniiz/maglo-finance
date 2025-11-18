@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   const authStorage = request.cookies.get('auth-storage')
@@ -13,6 +13,14 @@ export function middleware(request: NextRequest) {
       isAuthenticated = authData?.state?.isAuthenticated || false
     } catch (error) {
       console.error('Error parsing auth storage:', error)
+    }
+  }
+
+  if (pathname === '/') {
+    if (isAuthenticated) {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    } else {
+      return NextResponse.redirect(new URL('/auth/login', request.url))
     }
   }
 

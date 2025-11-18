@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } f
 import { toast } from 'sonner'
 import { ApiErrorResponse } from './types'
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://case.nodelabs.dev/api'
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api'
 
 class ApiClient {
   private instance: AxiosInstance

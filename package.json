@@ -2,17 +2,19 @@
   "name": "maglo-finance",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
-    "format": "npm run prettier:fix && npm run lint:fix",
+    "format": "npm run lint:fix && npm run prettier:fix",
     "type-check": "tsc --noEmit",
     "validate": "npm run type-check && npm run lint && npm run prettier",
+    "test": "echo \"No tests yet\" && exit 0",
     "prepare": "husky"
   },
   "dependencies": {
@@ -40,11 +42,14 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
+    "ts-essentials": "^10.0.0",
     "yup": "^1.7.1",
     "zod": "^4.1.12",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.39.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20.19.25",
     "@types/react": "^19.2.5",
