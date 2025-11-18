@@ -7,12 +7,12 @@ export const formatCurrency = (
 
   const symbolToCurrency: Record<string, string> = {
     $: 'USD',
-    '€': 'EUR',
-    '£': 'GBP',
-    '¥': 'JPY',
-    '₺': 'TRY',
-    '₹': 'INR',
-    '₽': 'RUB',
+    EUR: 'EUR',
+    GBP: 'GBP',
+    JPY: 'JPY',
+    TRY: 'TRY',
+    INR: 'INR',
+    RUB: 'RUB',
     C$: 'CAD',
     A$: 'AUD',
   }
@@ -54,8 +54,7 @@ export const formatCurrency = (
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(numericAmount)
-  } catch (_error) {
-    console.error('Error formatting currency')
+  } catch {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -84,7 +83,6 @@ export const formatDate = (
 
     if (diffInDays === 0) return 'Today'
     if (diffInDays === 1) return 'Yesterday'
-
     if (diffInDays < 7) return `${diffInDays} days ago`
     if (diffInDays < 30) {
       const weeks = Math.floor(diffInDays / 7)
@@ -124,9 +122,7 @@ export const formatCardNumber = (cardNumber: string): string => {
 export const maskCardNumber = (cardNumber: string): string => {
   if (!cardNumber) return ''
   const cleaned = cardNumber.replace(/\D/g, '')
-
   if (cleaned.length < 8) return cleaned
-
   const firstEight = cleaned.slice(0, 8)
   return `${firstEight}****`
 }
@@ -156,7 +152,7 @@ export const getCurrencySymbol = (currencyCode: string, locale?: string): string
       .format(0)
       .replace(/\d/g, '')
       .trim()
-  } catch (_error) {
+  } catch {
     return currencyCode
   }
 }

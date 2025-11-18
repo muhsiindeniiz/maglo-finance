@@ -3,7 +3,7 @@ import type { ClassNameValue } from 'tailwind-merge'
 import { twMerge } from 'tailwind-merge'
 import { MergeRecords } from '../type/common'
 
-export type ClassnamesProp<K extends string> = {
+export type ClassnamesProp = {
   classNames?: string
 }
 
