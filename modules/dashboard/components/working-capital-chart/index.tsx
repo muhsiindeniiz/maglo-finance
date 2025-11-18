@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/core/ui/components/card'
 import { Skeleton } from '@/core/ui/components/skeleton'
 import {
@@ -58,6 +58,17 @@ export default function WorkingCapitalChart({ data, isLoading }: WorkingCapitalC
       [label]: !prev[label],
     }))
   }
+
+  const periodOptions = useMemo(
+    () => [
+      { value: 'last7Days', label: 'Last 7 days' },
+      { value: 'last30Days', label: 'Last 30 days' },
+      { value: 'last60Days', label: 'Last 60 days' },
+      { value: 'last90Days', label: 'Last 90 days' },
+      { value: 'allTime', label: 'All Time' },
+    ],
+    []
+  )
 
   if (isLoading) {
     return (
@@ -139,51 +150,47 @@ export default function WorkingCapitalChart({ data, isLoading }: WorkingCapitalC
     afterDatasetsDraw(chart) {
       const { ctx, tooltip, chartArea } = chart
 
-      if (tooltip && tooltip.getActiveElements && tooltip.getActiveElements().length > 0) {
-        const activePoint = tooltip.getActiveElements()[0]
+      if (!tooltip || !chartArea) return
 
-        if (activePoint && activePoint.element) {
-          const x = activePoint.element.x
+      const activeElements = tooltip.getActiveElements?.()
+      if (!activeElements || activeElements.length === 0) return
 
-          const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom)
-          gradient.addColorStop(0, 'rgba(250, 251, 254, 0)')
-          gradient.addColorStop(0.6656, '#F2F6FC')
+      const activePoint = activeElements[0]
+      if (!activePoint || !activePoint.element) return
 
-          ctx.save()
+      const x = activePoint.element.x
 
-          const rectX = x - 25
-          const rectY = chartArea.top
-          const rectWidth = 50
-          const rectHeight = chartArea.bottom - chartArea.top
-          const borderRadius = 12
+      const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom)
+      gradient.addColorStop(0, 'rgba(250, 251, 254, 0)')
+      gradient.addColorStop(0.6656, '#F2F6FC')
 
-          ctx.fillStyle = gradient
-          ctx.beginPath()
-          ctx.moveTo(rectX, rectY)
-          ctx.lineTo(rectX + rectWidth, rectY)
-          ctx.lineTo(rectX + rectWidth, rectY + rectHeight - borderRadius)
-          ctx.arcTo(
-            rectX + rectWidth,
-            rectY + rectHeight,
-            rectX + rectWidth - borderRadius,
-            rectY + rectHeight,
-            borderRadius
-          )
-          ctx.lineTo(rectX + borderRadius, rectY + rectHeight)
-          ctx.arcTo(
-            rectX,
-            rectY + rectHeight,
-            rectX,
-            rectY + rectHeight - borderRadius,
-            borderRadius
-          )
-          ctx.lineTo(rectX, rectY)
-          ctx.closePath()
-          ctx.fill()
+      ctx.save()
 
-          ctx.restore()
-        }
-      }
+      const rectX = x - 25
+      const rectY = chartArea.top
+      const rectWidth = 50
+      const rectHeight = chartArea.bottom - chartArea.top
+      const borderRadius = 12
+
+      ctx.fillStyle = gradient
+      ctx.beginPath()
+      ctx.moveTo(rectX, rectY)
+      ctx.lineTo(rectX + rectWidth, rectY)
+      ctx.lineTo(rectX + rectWidth, rectY + rectHeight - borderRadius)
+      ctx.arcTo(
+        rectX + rectWidth,
+        rectY + rectHeight,
+        rectX + rectWidth - borderRadius,
+        rectY + rectHeight,
+        borderRadius
+      )
+      ctx.lineTo(rectX + borderRadius, rectY + rectHeight)
+      ctx.arcTo(rectX, rectY + rectHeight, rectX, rectY + rectHeight - borderRadius, borderRadius)
+      ctx.lineTo(rectX, rectY)
+      ctx.closePath()
+      ctx.fill()
+
+      ctx.restore()
     },
   }
 
@@ -281,7 +288,7 @@ export default function WorkingCapitalChart({ data, isLoading }: WorkingCapitalC
           },
           color: '#929EAE',
           padding: 10,
-          autoSkip: false,
+          autoSkip: true,
           maxRotation: 0,
           minRotation: 0,
         },
@@ -303,24 +310,18 @@ export default function WorkingCapitalChart({ data, isLoading }: WorkingCapitalC
     },
   }
 
-  const periodOptions = [
-    { value: 'last7Days', label: 'Last 7 days' },
-    { value: 'last30Days', label: 'Last 30 days' },
-    { value: 'last60Days', label: 'Last 60 days' },
-    { value: 'last90Days', label: 'Last 90 days' },
-    { value: 'allTime', label: 'All Time' },
-  ]
-
   return (
     <Card className="rounded-[10px] border-[#F5F5F5] shadow-none">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <CardTitle className="text-xl font-semibold text-[#1B212D]">Working Capital</CardTitle>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-4">
+      <CardHeader className="flex flex-col space-y-4 pb-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+        <CardTitle className="text-lg font-semibold text-[#1B212D] sm:text-xl">
+          Working Capital
+        </CardTitle>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-3 sm:gap-4">
             <button
               type="button"
               onClick={() => toggleDataset('Income')}
-              className="flex items-center cursor-pointer transition-opacity hover:opacity-80"
+              className="flex cursor-pointer items-center transition-opacity hover:opacity-80"
               style={{ gap: '9px', opacity: hiddenDatasets['Income'] ? 0.4 : 1 }}
             >
               <div className="h-2 w-2 rounded-full bg-[#29A073]" />
@@ -329,7 +330,7 @@ export default function WorkingCapitalChart({ data, isLoading }: WorkingCapitalC
             <button
               type="button"
               onClick={() => toggleDataset('Expenses')}
-              className="flex items-center cursor-pointer transition-opacity hover:opacity-80"
+              className="flex cursor-pointer items-center transition-opacity hover:opacity-80"
               style={{ gap: '9px', opacity: hiddenDatasets['Expenses'] ? 0.4 : 1 }}
             >
               <div className="h-2 w-2 rounded-full bg-[#C8EE44]" />
@@ -337,7 +338,7 @@ export default function WorkingCapitalChart({ data, isLoading }: WorkingCapitalC
             </button>
           </div>
           <Select value={selectedPeriod} onValueChange={handlePeriodChange}>
-            <SelectTrigger className="w-auto border-none bg-[#F8F8F8] text-[12px] text-[#1B212D] rounded-[5px] pl-[10px] pr-2 py-[6px] h-auto focus:ring-0 focus:ring-offset-0">
+            <SelectTrigger className="h-auto w-full rounded-[5px] border-none bg-[#F8F8F8] py-[6px] pl-[10px] pr-2 text-[12px] text-[#1B212D] focus:ring-0 focus:ring-offset-0 sm:w-auto">
               <SelectValue placeholder="Last 7 days" />
             </SelectTrigger>
             <SelectContent>
@@ -351,7 +352,7 @@ export default function WorkingCapitalChart({ data, isLoading }: WorkingCapitalC
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[280px]">
+        <div className="h-[280px] sm:h-[320px]">
           <Line data={chartData} options={options} plugins={[hoverLinePlugin]} />
         </div>
       </CardContent>

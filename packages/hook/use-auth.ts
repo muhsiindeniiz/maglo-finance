@@ -11,6 +11,8 @@ interface AuthState {
   isAuthenticated: boolean
   setAuth: (user: UserResponse, accessToken: string, refreshToken: string) => void
   clearAuth: () => void
+  hydrated: boolean
+  setHydrated: () => void
 }
 
 const customStorage = {
@@ -28,14 +30,14 @@ const customStorage = {
       const state = parsedValue?.state
 
       if (state) {
-        document.cookie = `auth-storage=${encodeURIComponent(value)}; path=/; max-age=2592000; SameSite=Lax`
+        document.cookie = `auth-storage=${encodeURIComponent(value)}; path=/; max-age=2592000; SameSite=Lax; Secure`
 
         if (state.accessToken) {
-          document.cookie = `accessToken=${encodeURIComponent(state.accessToken)}; path=/; max-age=2592000; SameSite=Lax`
+          document.cookie = `accessToken=${encodeURIComponent(state.accessToken)}; path=/; max-age=2592000; SameSite=Lax; Secure`
         }
 
         if (state.refreshToken) {
-          document.cookie = `refreshToken=${encodeURIComponent(state.refreshToken)}; path=/; max-age=2592000; SameSite=Lax`
+          document.cookie = `refreshToken=${encodeURIComponent(state.refreshToken)}; path=/; max-age=2592000; SameSite=Lax; Secure`
         }
       }
     } catch (error) {
@@ -47,7 +49,6 @@ const customStorage = {
 
     localStorage.removeItem(name)
 
-    // Remove all auth-related cookies
     const cookiesToRemove = ['auth-storage', 'accessToken', 'refreshToken']
     cookiesToRemove.forEach(cookieName => {
       document.cookie = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`
@@ -57,11 +58,17 @@ const customStorage = {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    set => ({
+    (set, get) => ({
       user: null,
       accessToken: null,
       refreshToken: null,
       isAuthenticated: false,
+      hydrated: false,
+
+      setHydrated: () => {
+        set({ hydrated: true })
+      },
+
       setAuth: (user, accessToken, refreshToken) => {
         if (typeof window !== 'undefined') {
           localStorage.setItem('accessToken', accessToken)
@@ -77,6 +84,7 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: true,
         })
       },
+
       clearAuth: () => {
         if (typeof window !== 'undefined') {
           localStorage.removeItem('accessToken')
@@ -94,6 +102,9 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'auth-storage',
       storage: createJSONStorage(() => customStorage),
+      onRehydrateStorage: () => state => {
+        state?.setHydrated()
+      },
     }
   )
 )

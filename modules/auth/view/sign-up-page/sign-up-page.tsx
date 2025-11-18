@@ -30,6 +30,7 @@ export const SignUpPage = ({ className }: SignUpPageProps & SignUpPageVariants) 
   } = useForm<RegisterInput>({
     resolver: yupResolver(registerSchema),
     mode: 'onBlur',
+    reValidateMode: 'onChange',
   })
 
   const onSubmit = (data: RegisterInput) => {
@@ -40,9 +41,12 @@ export const SignUpPage = ({ className }: SignUpPageProps & SignUpPageVariants) 
     console.log('Google sign up clicked')
   }
 
-  // Render nothing while checking auth
   if (isAuthenticated) {
-    return null
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[#C8EE44]" />
+      </div>
+    )
   }
 
   return (
@@ -101,7 +105,7 @@ export const SignUpPage = ({ className }: SignUpPageProps & SignUpPageVariants) 
 
               <Button
                 type="submit"
-                className="w-full h-12 rounded-[10px] bg-[#C8EE44] text-[#1B212D] text-[16px] font-semibold hover:bg-[#B5E625] transition-all shadow-none mb-4"
+                className="w-full h-12 rounded-[10px] bg-[#C8EE44] text-[#1B212D] text-[16px] font-semibold hover:bg-[#B5E625] transition-all shadow-none mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={registerMutation.isPending}
               >
                 {registerMutation.isPending ? (

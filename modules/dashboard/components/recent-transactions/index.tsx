@@ -73,7 +73,7 @@ export default function RecentTransactions({ data, isLoading }: RecentTransactio
       </CardHeader>
       <CardContent>
         <div className="space-y-0">
-          <div className="grid grid-cols-4 gap-4 px-4 py-2 text-[12px] font-semibold text-[#929EAE]">
+          <div className="hidden grid-cols-4 gap-4 px-4 py-2 text-[12px] font-semibold text-[#929EAE] sm:grid">
             <div className="text-left">NAME/BUSINESS</div>
             <div className="text-center">TYPE</div>
             <div className="text-center">AMOUNT</div>
@@ -87,12 +87,12 @@ export default function RecentTransactions({ data, isLoading }: RecentTransactio
               return (
                 <div
                   key={transaction.id}
-                  className={`grid grid-cols-4 gap-4 px-4 py-3 transition-colors hover:bg-accent ${
+                  className={`grid grid-cols-1 gap-2 px-4 py-3 transition-colors hover:bg-accent sm:grid-cols-4 sm:gap-4 ${
                     index !== data.transactions.length - 1 ? 'border-b border-[#F5F5F5]' : ''
                   }`}
                 >
-                  <div className="flex items-center justify-center gap-3">
-                    <div className="relative h-12 w-12 flex justify-center items-center flex-shrink-0 overflow-hidden">
+                  <div className="flex items-center gap-3">
+                    <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden sm:h-12 sm:w-12">
                       {displayIcon ? (
                         <Image
                           src={displayIcon}
@@ -103,7 +103,7 @@ export default function RecentTransactions({ data, isLoading }: RecentTransactio
                           unoptimized
                         />
                       ) : (
-                        <div className="flex h-full items-center justify-center text-lg font-bold text-slate-400">
+                        <div className="flex h-full items-center justify-center rounded-full bg-gray-200 text-lg font-bold text-slate-600">
                           {transaction.name.charAt(0)}
                         </div>
                       )}
@@ -112,21 +112,27 @@ export default function RecentTransactions({ data, isLoading }: RecentTransactio
                       <p className="truncate text-sm font-medium text-[#1B212D]">
                         {transaction.name}
                       </p>
-                      <p className="truncate text-[12px] text-[#929EAE] font-normal">
+                      <p className="truncate text-[12px] font-normal text-[#929EAE]">
                         {transaction.business}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center justify-center">
-                    <span className="text-sm text-[#929EAE] font-medium">{transaction.type}</span>
+
+                  <div className="flex items-center justify-between sm:justify-center">
+                    <span className="text-xs font-semibold text-[#929EAE] sm:hidden">Type:</span>
+                    <span className="text-sm font-medium text-[#929EAE]">{transaction.type}</span>
                   </div>
-                  <div className="flex items-center justify-center">
+
+                  <div className="flex items-center justify-between sm:justify-center">
+                    <span className="text-xs font-semibold text-[#929EAE] sm:hidden">Amount:</span>
                     <span className="font-semibold text-[#1B212D]">
                       {formatCurrency(transaction.amount, transaction.currency)}
                     </span>
                   </div>
-                  <div className="flex items-center justify-center">
-                    <span className="text-sm text-[#929EAE] font-medium">
+
+                  <div className="flex items-center justify-between sm:justify-center">
+                    <span className="text-xs font-semibold text-[#929EAE] sm:hidden">Date:</span>
+                    <span className="text-sm font-medium text-[#929EAE]">
                       {formatDate(transaction.date, 'short')}
                     </span>
                   </div>

@@ -56,6 +56,8 @@ class ApiClient {
       localStorage.removeItem('refreshToken')
 
       document.cookie = 'auth-storage=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+      document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+      document.cookie = 'refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
 
       window.location.href = '/auth/login'
     }
@@ -87,10 +89,34 @@ export const apiClient = new ApiClient()
 export const handleApiError = (error: unknown): string => {
   if (axios.isAxiosError(error)) {
     const apiError = error.response?.data as ApiErrorResponse | undefined
-    const message = apiError?.message || error.message || 'An unexpected error occurred'
+
+    if (!error.response) {
+      const message = 'Network error. Please check your connection.'
+      toast.error(message)
+      return message
+    }
+
+    if (apiError?.message) {
+      toast.error(apiError.message)
+      return apiError.message
+    }
+
+    if (error.response.status >= 500) {
+      const message = 'Server error. Please try again later.'
+      toast.error(message)
+      return message
+    }
+
+    const message = error.message || 'An unexpected error occurred'
     toast.error(message)
     return message
   }
+
+  if (error instanceof Error) {
+    toast.error(error.message)
+    return error.message
+  }
+
   const message = 'An unexpected error occurred'
   toast.error(message)
   return message

@@ -18,7 +18,7 @@ const RootLayout: FC<LayoutProps> = ({ children }) => {
           <ErrorBoundary>
             <QueryProvider>
               {children}
-              <Toaster position="top-right" richColors />
+              <Toaster position="top-right" richColors closeButton />
             </QueryProvider>
           </ErrorBoundary>
         </RootTheme>
@@ -30,6 +30,10 @@ const RootLayout: FC<LayoutProps> = ({ children }) => {
 export const metadata: Metadata = {
   title: 'Maglo - Financial Tracking Platform',
   description: 'Track your finances, manage your budget, and achieve your financial goals.',
+  keywords: ['finance', 'budget', 'tracking', 'money management'],
+  authors: [{ name: 'Maglo Team' }],
+  viewport: 'width=device-width, initial-scale=1',
+  themeColor: '#C8EE44',
 }
 
 export default RootLayout

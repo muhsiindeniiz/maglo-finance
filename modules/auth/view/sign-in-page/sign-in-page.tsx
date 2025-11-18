@@ -30,6 +30,7 @@ export const SignInPage = ({ className }: SignInPageProps & SignInPageVariants) 
   } = useForm<LoginInput>({
     resolver: yupResolver(loginSchema),
     mode: 'onBlur',
+    reValidateMode: 'onChange',
   })
 
   const onSubmit = (data: LoginInput) => {
@@ -41,7 +42,11 @@ export const SignInPage = ({ className }: SignInPageProps & SignInPageVariants) 
   }
 
   if (isAuthenticated) {
-    return null
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[#C8EE44]" />
+      </div>
+    )
   }
 
   return (
@@ -88,7 +93,7 @@ export const SignInPage = ({ className }: SignInPageProps & SignInPageVariants) 
 
               <Button
                 type="submit"
-                className="w-full h-12 rounded-[10px] bg-[#C8EE44] text-[#1B212D] text-[16px] font-semibold hover:bg-[#B5E625] transition-all mb-[15px] shadow-none"
+                className="w-full h-12 rounded-[10px] bg-[#C8EE44] text-[#1B212D] text-[16px] font-semibold hover:bg-[#B5E625] transition-all mb-[15px] shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={loginMutation.isPending}
               >
                 {loginMutation.isPending ? (

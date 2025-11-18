@@ -19,8 +19,8 @@ export default function WalletCards({ data, isLoading }: WalletCardsProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <Skeleton className="h-48 w-full rounded-2xl" />
-            <Skeleton className="h-20 w-full rounded-lg" />
+            <Skeleton className="h-48 w-full rounded-2xl md:h-56" />
+            <Skeleton className="h-20 w-full rounded-lg md:h-24" />
           </div>
         </CardContent>
       </Card>
@@ -29,11 +29,11 @@ export default function WalletCards({ data, isLoading }: WalletCardsProps) {
 
   if (!data || !Array.isArray(data.cards) || data.cards.length === 0) {
     return (
-      <Card className="rounded-[10px] border-none shadow-none pt-0">
-        <CardHeader>
-          <CardTitle className="text-xl font-bold">Wallet</CardTitle>
+      <Card className="rounded-[10px] border-none p-0 shadow-none">
+        <CardHeader className="px-0 pt-0">
+          <CardTitle className="text-xl font-bold md:text-2xl">Wallet</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-0">
           <div className="flex h-[200px] items-center justify-center text-muted-foreground">
             No cards available
           </div>
@@ -42,8 +42,23 @@ export default function WalletCards({ data, isLoading }: WalletCardsProps) {
     )
   }
 
-  const primaryCard = data.cards[0]!
-  const secondaryCard = data.cards[1]
+  const primaryCard = data.cards[0]
+  const secondaryCard = data.cards.length > 1 ? data.cards[1] : null
+
+  if (!primaryCard) {
+    return (
+      <Card className="rounded-[10px] border-none p-0 shadow-none">
+        <CardHeader className="px-0 pt-0">
+          <CardTitle className="text-xl font-bold md:text-2xl">Wallet</CardTitle>
+        </CardHeader>
+        <CardContent className="px-0">
+          <div className="flex h-[200px] items-center justify-center text-muted-foreground">
+            No cards available
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   const getExpiryDate = (card: CardType): string => {
     if (card.expiryDate) return card.expiryDate
@@ -62,16 +77,16 @@ export default function WalletCards({ data, isLoading }: WalletCardsProps) {
   }
 
   return (
-    <Card className="rounded-[10px] border-none shadow-none p-0">
-      <CardHeader className="flex flex-row items-center justify-between px-0 space-y-0 pb-4 pt-0">
-        <CardTitle className="text-xl font-semibold text-[#1B212D]">Wallet</CardTitle>
-        <Button variant="ghost" size="icon" className="h-8 w-8">
-          <Ellipses className="h-5 w-5" />
+    <Card className="rounded-[10px] border-none p-0 shadow-none">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 px-0 pb-4 pt-0 md:pb-6">
+        <CardTitle className="text-xl font-semibold text-[#1B212D] md:text-2xl">Wallet</CardTitle>
+        <Button variant="ghost" size="icon" className="h-8 w-8 md:h-10 md:w-10">
+          <Ellipses className="h-5 w-5 md:h-6 md:w-6" />
         </Button>
       </CardHeader>
-      <CardContent className="space-y-4 px-0">
+      <CardContent className="space-y-4 px-0 md:space-y-5">
         <div
-          className="relative h-[210px] overflow-hidden rounded-2xl p-6 text-white shadow-xl"
+          className="relative h-[200px] overflow-hidden rounded-2xl p-5 text-white shadow-xl md:h-[230px] md:p-6 lg:h-[240px] lg:p-7"
           style={{
             background: 'linear-gradient(104.3deg, #4A4A49 2.66%, #20201F 90.57%)',
           }}
@@ -79,7 +94,7 @@ export default function WalletCards({ data, isLoading }: WalletCardsProps) {
           <div className="flex h-full flex-col justify-between">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <p className="text-base font-bold text-[#FFFFFF]">Maglo.</p>
+                <p className="text-base font-bold text-[#FFFFFF] md:text-lg">Maglo.</p>
                 <svg
                   width="1"
                   height="20"
@@ -89,22 +104,22 @@ export default function WalletCards({ data, isLoading }: WalletCardsProps) {
                 >
                   <rect width="1" height="20" fill="#626261" />
                 </svg>
-                <p className="mt-0.5 text-xs text-[#626260] font-medium">
+                <p className="mt-0.5 text-xs font-medium text-[#626260] md:text-sm">
                   {formatBankName(primaryCard.bank)}
                 </p>
               </div>
             </div>
 
             <div>
-              <div className="mb-1 w-full flex h-8 w-12 items-center justify-between rounded">
+              <div className="mb-2 flex h-8 w-full items-center justify-between rounded md:mb-3 md:h-10">
                 <SimCard />
                 <Wireless />
               </div>
-              <p className="mt-4 text-[17px] text-white font-bold font-mono tracking-wider">
+              <p className="mt-3 font-mono text-base font-bold tracking-wider text-white md:mt-4 md:text-lg lg:text-xl">
                 {formatCardNumber(primaryCard.cardNumber)}
               </p>
-              <div className="w-max mt-3 ml-auto">
-                <MasterCard />
+              <div className="ml-auto mt-3 w-max md:mt-4">
+                <MasterCard className="h-6 w-auto md:h-8" />
               </div>
             </div>
           </div>
@@ -112,7 +127,7 @@ export default function WalletCards({ data, isLoading }: WalletCardsProps) {
 
         {secondaryCard && (
           <div
-            className="overflow-hidden rounded-[15px] p-4 shadow-lg -mt-20 w-full max-w-[calc(100%_-_30px)] mx-auto"
+            className="-mt-20 mx-auto w-full max-w-[calc(100%_-_24px)] overflow-hidden rounded-[15px] p-4 shadow-lg md:-mt-24 md:max-w-[calc(100%_-_30px)] md:p-5 lg:-mt-28 lg:p-6"
             style={{
               background:
                 'linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%)',
@@ -121,7 +136,7 @@ export default function WalletCards({ data, isLoading }: WalletCardsProps) {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <p className="text-base font-bold text-[#FFFFFF]">Maglo.</p>
+                <p className="text-base font-bold text-[#FFFFFF] md:text-lg">Maglo.</p>
                 <svg
                   width="1"
                   height="20"
@@ -131,32 +146,32 @@ export default function WalletCards({ data, isLoading }: WalletCardsProps) {
                 >
                   <rect width="1" height="20" fill="#F5F5F5" />
                 </svg>
-                <p className="text-xs text-[#F5F5F5] font-medium">
+                <p className="text-xs font-medium text-[#F5F5F5] md:text-sm">
                   {formatBankName(secondaryCard.bank)}
                 </p>
               </div>
             </div>
 
-            <div className="mt-[13px] flex items-start justify-between">
-              <SimCard className="text-[#1B212D]" />
+            <div className="mt-3 flex items-start justify-between md:mt-4">
+              <SimCard />
               <Wireless />
             </div>
 
-            <div className="mt-8">
+            <div className="mt-6 md:mt-8">
               <div className="flex items-center justify-between">
-                <p className="font-mono tracking-wider text-base font-bold text-[#1B212D]">
+                <p className="font-mono text-sm font-bold tracking-wider text-[#1B212D] md:text-base lg:text-lg">
                   {maskCardNumber(secondaryCard.cardNumber)}
                 </p>
                 <div className="flex items-center gap-2">
                   {getBrandName(secondaryCard.network) === 'visa' && (
-                    <Visa className="h-6 w-auto" />
+                    <Visa className="h-5 w-auto md:h-6 lg:h-7" />
                   )}
                   {getBrandName(secondaryCard.network) === 'mastercard' && (
-                    <MasterCard className="h-6 w-auto" />
+                    <MasterCard className="h-5 w-auto md:h-6 lg:h-7" />
                   )}
                 </div>
               </div>
-              <p className="mt-[5px] font-medium text-[12px] text-[#929EAE] font-medium">
+              <p className="mt-[5px] text-[12px] font-medium text-[#929EAE] md:text-sm">
                 {getExpiryDate(secondaryCard)}
               </p>
             </div>

@@ -22,9 +22,9 @@ export default function DashboardPage() {
   const { data: transfersData, isLoading: transfersLoading } = useScheduledTransfers()
 
   return (
-    <div className="flex flex-col gap-6 lg:flex-row">
+    <div className="flex flex-col gap-6 xl:flex-row">
       <div className="flex-1 space-y-6">
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <SummaryCard
             title="Total balance"
             data={summaryData?.totalBalance}
@@ -53,7 +53,7 @@ export default function DashboardPage() {
         <RecentTransactions data={transactionsData} isLoading={transactionsLoading} />
       </div>
 
-      <div className="w-full lg:w-[380px] space-y-6">
+      <div className="w-full space-y-6 xl:w-[420px] 2xl:w-[450px]">
         <WalletCards data={walletData} isLoading={walletLoading} />
         <ScheduledTransfers data={transfersData} isLoading={transfersLoading} />
       </div>
