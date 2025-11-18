@@ -54,6 +54,8 @@ export default function RecentTransactions({ data, isLoading }: RecentTransactio
     )
   }
 
+  const displayedTransactions = data.transactions.slice(0, 3)
+
   return (
     <Card className="rounded-[10px] border-[#F5F5F5] shadow-none">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
@@ -71,7 +73,7 @@ export default function RecentTransactions({ data, isLoading }: RecentTransactio
           </Link>
         </Button>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pb-0">
         <div className="space-y-0">
           <div className="hidden grid-cols-4 gap-4 px-4 py-2 text-[12px] font-semibold text-[#929EAE] sm:grid">
             <div className="text-left">NAME/BUSINESS</div>
@@ -81,14 +83,14 @@ export default function RecentTransactions({ data, isLoading }: RecentTransactio
           </div>
 
           <div className="space-y-0">
-            {data.transactions.map((transaction, index) => {
+            {displayedTransactions.map((transaction, index) => {
               const displayIcon = transaction.icon || transaction.image
 
               return (
                 <div
                   key={transaction.id}
-                  className={`grid grid-cols-1 gap-2 px-4 py-3 transition-colors hover:bg-accent sm:grid-cols-4 sm:gap-4 ${
-                    index !== data.transactions.length - 1 ? 'border-b border-[#F5F5F5]' : ''
+                  className={`grid grid-cols-1 gap-2 px-4 py-3 transition-colors sm:grid-cols-4 sm:gap-4 ${
+                    index !== displayedTransactions.length - 1 ? 'border-b border-[#F5F5F5]' : ''
                   }`}
                 >
                   <div className="flex items-center gap-3">

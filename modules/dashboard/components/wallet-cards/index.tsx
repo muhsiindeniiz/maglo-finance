@@ -127,7 +127,7 @@ export default function WalletCards({ data, isLoading }: WalletCardsProps) {
 
         {secondaryCard && (
           <div
-            className="-mt-20 mx-auto w-full max-w-[calc(100%_-_24px)] overflow-hidden rounded-[15px] p-4 shadow-lg md:-mt-24 md:max-w-[calc(100%_-_30px)] md:p-5 lg:-mt-28 lg:p-6"
+            className="-mt-16 mx-auto w-full max-w-[calc(100%_-_24px)] overflow-hidden rounded-[15px] p-4 shadow-lg md:-mt-24 md:max-w-[calc(100%_-_30px)] md:p-5 lg:-mt-22 lg:p-6"
             style={{
               background:
                 'linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%)',
