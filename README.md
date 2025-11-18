@@ -1,17 +1,6 @@
 # Maglo Finance
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://maglo-finance-two.vercel.app/)
-
-## Prerequisites & Dependencies
-
-*   Node.js (>=18)
-*   npm or yarn or pnpm or bun
-*   TypeScript
-*   Next.js
-*   Tailwind CSS
-*   tw-animate-css
-*   axios
-*   sonner
+[![View Live Demo →](https://img.shields.io/badge/View_Live_Demo-%23000?style=for-the-badge&logo=vercel&logoColor=white&color=000)](https://maglo-finance-two.vercel.app/)
 
 ## Installation & Setup Instructions
 
@@ -39,8 +28,8 @@
     Create a `.env.local` file in the root directory.  Add the following:
 
     ```
-    API_BASE_URL=https://case.nodelabs.dev/api # Example API Base URL
-    NEXT_PUBLIC_API_URL=/api # URL for proxy server
+    API_BASE_URL=https://case.nodelabs.dev/api
+    NEXT_PUBLIC_API_URL=/api
     ```
 
 4.  **Run the development server:**
