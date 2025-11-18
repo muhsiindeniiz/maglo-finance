@@ -42,23 +42,11 @@ ChartJS.register(
 interface WorkingCapitalChartProps {
   data?: WorkingCapital | undefined
   isLoading?: boolean
-  onPeriodChange?: (period: string) => void
 }
 
-export default function WorkingCapitalChart({
-  data,
-  isLoading,
-  onPeriodChange,
-}: WorkingCapitalChartProps) {
+export default function WorkingCapitalChart({ data, isLoading }: WorkingCapitalChartProps) {
   const [selectedPeriod, setSelectedPeriod] = useState('last7Days')
   const [hiddenDatasets, setHiddenDatasets] = useState<{ [key: string]: boolean }>({})
-  const lastActiveDatasetRef = useRef<number | null>(null)
-
-  useEffect(() => {
-    if (onPeriodChange) {
-      onPeriodChange(selectedPeriod)
-    }
-  }, [selectedPeriod, onPeriodChange])
 
   const handlePeriodChange = (value: string) => {
     setSelectedPeriod(value)

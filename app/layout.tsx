@@ -5,6 +5,7 @@ import { RootBody } from '@/packages/provider/root-body'
 import { RootHtml } from '@/packages/provider/root-html'
 import { RootTheme } from '@/packages/provider/root-theme'
 import { QueryProvider } from '@/packages/provider/query-provider'
+import { ErrorBoundary } from '@/packages/provider/error-boundary'
 import './globals.css'
 
 type LayoutProps = PropsWithChildren
@@ -14,10 +15,12 @@ const RootLayout: FC<LayoutProps> = ({ children }) => {
     <RootHtml>
       <RootBody>
         <RootTheme>
-          <QueryProvider>
-            {children}
-            <Toaster position="top-right" richColors />
-          </QueryProvider>
+          <ErrorBoundary>
+            <QueryProvider>
+              {children}
+              <Toaster position="top-right" richColors />
+            </QueryProvider>
+          </ErrorBoundary>
         </RootTheme>
       </RootBody>
     </RootHtml>

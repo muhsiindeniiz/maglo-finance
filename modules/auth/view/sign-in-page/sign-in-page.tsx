@@ -9,6 +9,7 @@ import { cn } from '@/packages/util/cn'
 import { LoginInput } from '../../types/auth'
 import { loginSchema } from '../../utils/validation'
 import { useLogin } from '../../hook/use-login'
+import { useAuthRedirect } from '../../hook/use-auth-redirect'
 import { AuthInput } from '../../components/auth-input'
 import { PasswordInput } from '../../components/password-input'
 import { signInPageVariants, type SignInPageVariants } from './sign-in-page.cva'
@@ -20,6 +21,7 @@ import { GoogleButton } from '../../components/google-button'
 
 export const SignInPage = ({ className }: SignInPageProps & SignInPageVariants) => {
   const loginMutation = useLogin()
+  const { isAuthenticated } = useAuthRedirect()
 
   const {
     register,
@@ -27,6 +29,7 @@ export const SignInPage = ({ className }: SignInPageProps & SignInPageVariants) 
     formState: { errors },
   } = useForm<LoginInput>({
     resolver: yupResolver(loginSchema),
+    mode: 'onBlur',
   })
 
   const onSubmit = (data: LoginInput) => {
@@ -35,6 +38,10 @@ export const SignInPage = ({ className }: SignInPageProps & SignInPageVariants) 
 
   const handleGoogleSignIn = () => {
     console.log('Google sign in clicked')
+  }
+
+  if (isAuthenticated) {
+    return null
   }
 
   return (
@@ -134,6 +141,7 @@ export const SignInPage = ({ className }: SignInPageProps & SignInPageVariants) 
           className="w-full h-screen object-cover"
           width={1000}
           height={1000}
+          priority
         />
       </div>
     </div>

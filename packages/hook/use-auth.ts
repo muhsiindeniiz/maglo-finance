@@ -23,14 +23,35 @@ const customStorage = {
 
     localStorage.setItem(name, value)
 
-    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=2592000; SameSite=Lax`
+    try {
+      const parsedValue = JSON.parse(value)
+      const state = parsedValue?.state
+
+      if (state) {
+        document.cookie = `auth-storage=${encodeURIComponent(value)}; path=/; max-age=2592000; SameSite=Lax`
+
+        if (state.accessToken) {
+          document.cookie = `accessToken=${encodeURIComponent(state.accessToken)}; path=/; max-age=2592000; SameSite=Lax`
+        }
+
+        if (state.refreshToken) {
+          document.cookie = `refreshToken=${encodeURIComponent(state.refreshToken)}; path=/; max-age=2592000; SameSite=Lax`
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing auth state for cookies:', error)
+    }
   },
   removeItem: (name: string): void => {
     if (typeof window === 'undefined') return
 
     localStorage.removeItem(name)
 
-    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`
+    // Remove all auth-related cookies
+    const cookiesToRemove = ['auth-storage', 'accessToken', 'refreshToken']
+    cookiesToRemove.forEach(cookieName => {
+      document.cookie = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`
+    })
   },
 }
 

@@ -9,6 +9,7 @@ import { cn } from '@/packages/util/cn'
 import { RegisterInput } from '../../types/auth'
 import { registerSchema } from '../../utils/validation'
 import { useRegister } from '../../hook/use-register'
+import { useAuthRedirect } from '../../hook/use-auth-redirect'
 import { AuthInput } from '../../components/auth-input'
 import { PasswordInput } from '../../components/password-input'
 import { signUpPageVariants, type SignUpPageVariants } from './sign-up-page.cva'
@@ -20,6 +21,7 @@ import { GoogleButton } from '../../components/google-button'
 
 export const SignUpPage = ({ className }: SignUpPageProps & SignUpPageVariants) => {
   const registerMutation = useRegister()
+  const { isAuthenticated } = useAuthRedirect()
 
   const {
     register,
@@ -27,6 +29,7 @@ export const SignUpPage = ({ className }: SignUpPageProps & SignUpPageVariants) 
     formState: { errors },
   } = useForm<RegisterInput>({
     resolver: yupResolver(registerSchema),
+    mode: 'onBlur',
   })
 
   const onSubmit = (data: RegisterInput) => {
@@ -35,6 +38,11 @@ export const SignUpPage = ({ className }: SignUpPageProps & SignUpPageVariants) 
 
   const handleGoogleSignUp = () => {
     console.log('Google sign up clicked')
+  }
+
+  // Render nothing while checking auth
+  if (isAuthenticated) {
+    return null
   }
 
   return (
@@ -146,6 +154,7 @@ export const SignUpPage = ({ className }: SignUpPageProps & SignUpPageVariants) 
           className="w-full h-screen object-cover"
           width={1000}
           height={1000}
+          priority
         />
       </div>
     </div>
